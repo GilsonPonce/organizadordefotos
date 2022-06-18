@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="photomanager.jnlp">
+  <information>
+    <title>photomanager</title>
+    <vendor>GILSON</vendor>
+    <description>null</description>
+    <offline-allowed/>
+  </information>
+  <resources>
+    <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+    <jar href="photomanager.jar" size="6252" download="eager" />
+  </resources>
+  <jfx:javafx-desc  width="800" height="600" main-class="controller.Main"  name="photomanager" />
+  <update check="always"/>
+</jnlp>
