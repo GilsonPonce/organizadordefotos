@@ -11,6 +11,8 @@ package model;
  */
 public class Album {
     //tiene nombre, descripcion
+    private String nombre;
+    private String descripcion;
     /*
        se debera implementar las funciones de 
             getters and setter
@@ -20,5 +22,23 @@ public class Album {
             getAlbum
             getAllAlbum
     */
+    public Album(String nombre, String descripcion){
+        this.nombre = nombre;
+        this.descripcion = descripcion; 
+    }
+    
+    public String getNombre(){
+        return nombre;
+    }
+    
+    public String getDescripcion(){
+        return descripcion;
+    }
+    public void setNombre(String nombre){
+        this.nombre = nombre;
+    }
+    public void setDescripcion(String descripcion){
+        this.descripcion = descripcion;
+    }
     
 }

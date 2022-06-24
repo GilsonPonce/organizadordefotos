@@ -45,7 +45,7 @@ public class controllerMain implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
     }    
-
+/*
     @FXML
     private void BuscarInTF(MouseEvent event) {
         String Lugar=TFLugar.getText();
@@ -59,5 +59,5 @@ public class controllerMain implements Initializable {
             );
         }
     }
-    
+*/  
 }

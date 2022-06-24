@@ -10,6 +10,26 @@ package model;
  * @author GILSON PONCE, EDGAR ALVARADO Y JOSE ZAMBRANO
  */
 public class Persona {
+    private String nombre;
+    private String idFoto;
+    
+    public Persona(String nombre, String idFoto){
+        this.nombre = nombre;
+        this.idFoto = idFoto;
+    }
+    
+    public String getNombre(){
+        return nombre;
+    }
+    public String getIdFoto(){
+        return idFoto;
+    }
+    public void setNombre(String nombre){
+        this.nombre = nombre;
+    }
+    public void setIdFoto(String idFoto){
+        this.idFoto = idFoto;
+    }
     
     //tiene nombrecompleto
     /*
