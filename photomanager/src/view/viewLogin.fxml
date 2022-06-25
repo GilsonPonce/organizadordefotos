@@ -6,20 +6,20 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane id="AnchorPane" prefHeight="274.0" prefWidth="420.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/18" fx:controller="controller.ViewLoginController">
+<AnchorPane id="AnchorPane" prefHeight="227.0" prefWidth="420.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ViewLoginController">
    <children>
-      <Button id="btnIngresar" layoutX="184.0" layoutY="202.0" mnemonicParsing="false" text="Ingresar" />
-      <TextField id="txtusuario" layoutX="67.0" layoutY="144.0" prefHeight="26.0" prefWidth="285.0" />
-      <Label layoutX="186.0" layoutY="117.0" text="Usuario">
+      <Button id="btnIngresar" fx:id="btnlogin" layoutX="184.0" layoutY="172.0" mnemonicParsing="false" onAction="#login" text="Ingresar" />
+      <TextField id="txtusuario" fx:id="txtloginusuario" layoutX="67.0" layoutY="111.0" onKeyPressed="#enter" prefHeight="26.0" prefWidth="285.0" />
+      <Label layoutX="186.0" layoutY="81.0" text="Usuario">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <Label layoutX="136.0" layoutY="28.0" text="Bienvenido">
+      <Label layoutX="134.0" layoutY="18.0" text="Bienvenid@" textAlignment="CENTER">
          <font>
             <Font size="30.0" />
          </font>
       </Label>
+      <Label layoutX="68.0" layoutY="142.0" text="Ejemplo: klsanchez" />
    </children>
 </AnchorPane>

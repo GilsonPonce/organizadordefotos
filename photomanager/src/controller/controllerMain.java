@@ -4,17 +4,24 @@
  */
 package controller;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 import model.Foto;
 
 /**
@@ -44,10 +51,11 @@ public class controllerMain implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-    }    
-/*
+    }
+
     @FXML
     private void BuscarInTF(MouseEvent event) {
+        /*
         String Lugar=TFLugar.getText();
         String Persona=TFPersona.getText();
         if(!(CBPorPersona.isSelected() && CBPorLugar.isSelected())){
@@ -57,7 +65,7 @@ public class controllerMain implements Initializable {
             columna.setCellValueFactory((TreeTableColumn.CellDataFeatures<Foto,String>parametro)->
                     new ReadOnlyStringWrapper()parametro.getValue().getAtributodelaFoto())//implementar metodo
             );
-        }
+        }*/
     }
-*/  
+
 }

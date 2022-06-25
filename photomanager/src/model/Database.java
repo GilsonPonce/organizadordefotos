@@ -71,6 +71,17 @@ public void setListGalerias(LinkedList lista){
        }
   }
   
+  public void crearDirectorio(){
+      File directorio = new File("tmp");
+        if (!directorio.exists()) {
+            if (directorio.mkdirs()) {
+                System.out.println("Directorio creado");
+            } else {
+                System.out.println("Error al crear directorio");
+            }
+        }
+  }
+  
   /**
    * Metodo que lee la base de datos para cargar la informacion
    */
@@ -168,6 +179,7 @@ public void setListGalerias(LinkedList lista){
            }
       }else{
           crearDatabase();
+          crearDirectorio();
       }
   }
    
@@ -178,6 +190,42 @@ public void setListGalerias(LinkedList lista){
      }
      return false;
  }
+ 
+ public Usuario getUsuario(String nombre){
+     Iterator<Usuario> it = listUsuarios.iterator();
+     while(it.hasNext()){
+         Usuario user = it.next();
+         if(user.getNombre() == nombre) return user;
+     }
+     return new Usuario("vacio");
+ }
+ 
+ public boolean insertUsuario(String nombre){
+     if(nombre == null || nombre == "") return false;
+     if(existeUsuario(nombre)) return false;
+     Usuario user = new Usuario(nombre);
+     listUsuarios.add(user);
+     return true;
+ }
+ 
+ public Galeria getGaleriaByUsuario(String nombre){
+     if(existeUsuario(nombre)){
+        Iterator<Galeria> itG = listGalerias.iterator();
+        while(itG.hasNext()){
+            Galeria galeri = itG.next();
+           if(galeri.getUsuario().getNombre() == nombre){
+               return galeri;
+           }
+        }
+     }
+     LinkedList<Album> album = new LinkedList();
+     LinkedList<Foto> foto = new LinkedList();
+     LinkedList<Persona> persona = new LinkedList();
+     Usuario user = getUsuario(nombre);
+     return new Galeria(album,foto,persona,user);
+ }
+ 
+ 
  
  
     

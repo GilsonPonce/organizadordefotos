@@ -5,6 +5,7 @@
  */
 package controller;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
@@ -12,6 +13,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import model.Database;
+import org.json.simple.parser.ParseException;
 
 /**
  *
@@ -29,18 +32,25 @@ public class Main extends Application {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(Main.class.getResource("/view/viewLogin.fxml"));
             Pane ventana = (Pane) loader.load();
-            
-            
-            //show the scene containing the root layout
             Scene scene = new Scene(ventana);
             primaryStage.setScene(scene);
+            //primaryStage.getIcons().add(new Image("/path/to/stackoverflow.jpg"));
+            primaryStage.setTitle("Login");
             primaryStage.show();
         }catch(IOException e){
             System.out.println(e.getMessage());
         }
     }
     
-    public static void main(String[] args) {
+    @Override
+    public void stop(){
+        System.out.println("Stage is closing");
+        // Save file
+    }
+    
+    public static void main(String[] args) throws IOException, FileNotFoundException, ParseException {
+        Database database = new Database();
+        database.leerDatabase();
         launch(args);
     }
     

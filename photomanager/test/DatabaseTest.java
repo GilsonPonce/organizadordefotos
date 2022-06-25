@@ -24,6 +24,7 @@ import org.testng.annotations.Test;
  */
 public class DatabaseTest {
     private Database database;
+    
     public DatabaseTest() {
         database = new Database();
     }
@@ -49,6 +50,14 @@ public class DatabaseTest {
        usuarios.add(user);
        assertEquals(true,database.existeUsuario("Jose Ponce"));
     }
+  
+   @Test
+   public void testGetUsuario(){
+       LinkedList usuarios = database.getListUsuarios();
+       Usuario user = new Usuario("Pedro Pablo");
+       usuarios.add(user);
+       assertEquals(user,database.getUsuario("Pedro Pablo"));
+   }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
