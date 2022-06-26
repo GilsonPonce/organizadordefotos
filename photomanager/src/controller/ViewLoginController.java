@@ -27,6 +27,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import model.Database;
+import model.Usuario;
+import org.json.simple.parser.ParseException;
 
 /**
  * FXML Controller class
@@ -46,35 +48,47 @@ public class ViewLoginController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-    }    
-
+    } 
+    
+    /**
+     * Metodo que escucha al boton login para validar los datos
+     * @param event Evento en escucha del click del boton login
+     */
     @FXML
-    private void login(ActionEvent event) {
-        if(validarLogin()){
+    private void login(ActionEvent event) throws IOException, ParseException {
+        String nombre = this.txtloginusuario.getText();
+        if(!"".equals(nombre) && nombre != null){
             Node source = (Node) event.getSource();
             Stage stage = (Stage) source.getScene().getWindow();
-            stage.close();
             abrirMain();
+            stage.close();
         }else{
             mostrarAlertWarning();
         }
     }
       
-
+    /**
+     * Metodo para escucha de la tecla ENTER en el textbox de usuario
+     * @param event al pusar la tecla enter 
+     */
     @FXML
-    private void enter(KeyEvent event) {
+    private void enter(KeyEvent event) throws IOException, ParseException {
+        String nombre = this.txtloginusuario.getText();
         if(event.getCode() == KeyCode.ENTER){
-            if(validarLogin()){
+            if(!"".equals(nombre) && nombre != null){
                 Node source = (Node) event.getSource();
                 Stage stage = (Stage) source.getScene().getWindow();
-                stage.close();
                 abrirMain();
+                stage.close();
             }else{
                 mostrarAlertWarning();
             }
         }
     }
     
+    /**
+     * Metodo que muestra una alerta en caso del que nombre no sea valido
+     */
      private void mostrarAlertWarning() {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setHeaderText(null);
@@ -82,32 +96,27 @@ public class ViewLoginController implements Initializable {
         alert.setContentText("Ingrese un nombre valido");
         alert.showAndWait();
     }
-    
+     
+    /**
+     * Metedo que abre el main o la ventana principal de la aplicacion
+     */
     private void abrirMain(){
+        String nombre = this.txtloginusuario.getText();
         try {
-            Stage stage = new Stage();
-            Parent root = FXMLLoader.load(getClass().getResource("/view/viewMain.fxml"));
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("Photo Manager");
-            stage.show();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/viewMain.fxml"));
+            Database database = Database.getInstance();
+            Usuario user = new Usuario(nombre);
+            database.setUsuario(user);
+            Parent root1 = loader.load();
+            controllerMain ven = loader.getController();
+            Scene scene1 = new Scene(root1);
+            Stage stage1 = new Stage();
+            stage1.setTitle("PhegistroAlbumoto Manager");
+            stage1.setResizable(false);
+            stage1.setScene(scene1);
+            stage1.show();
         } catch (IOException ex) {
             Logger.getLogger(ViewLoginController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-    private boolean validarLogin(){
-        Database database = new Database();
-        ControllerState state = new ControllerState();
-        String nombre = this.txtloginusuario.getText();
-        if(!"".equals(nombre) && nombre != null){
-            if(!database.existeUsuario(nombre)){
-                database.insertUsuario(nombre);
-            }
-            state.nombreUsuario = nombre;
-            return true;
-        }else{
-            return false;
         }
     }
     

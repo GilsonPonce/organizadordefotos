@@ -36,6 +36,7 @@ public class Main extends Application {
             primaryStage.setScene(scene);
             //primaryStage.getIcons().add(new Image("/path/to/stackoverflow.jpg"));
             primaryStage.setTitle("Login");
+            primaryStage.setResizable(false);
             primaryStage.show();
         }catch(IOException e){
             System.out.println(e.getMessage());
@@ -49,8 +50,6 @@ public class Main extends Application {
     }
     
     public static void main(String[] args) throws IOException, FileNotFoundException, ParseException {
-        Database database = new Database();
-        database.leerDatabase();
         launch(args);
     }
     

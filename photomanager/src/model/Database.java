@@ -11,6 +11,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -20,30 +22,12 @@ import org.json.simple.parser.ParseException;
  * Esta clase define la logica de la base de datos del sistema para la persistencia de datos
  * @author Gilson Ponce
  * @version 1.0.0
- * @param <T> 
  */
-public class Database{
+public final class Database{
   //Campos de la clase
   private final File archivo = new File("database.json");
-  private LinkedList<Usuario> listUsuarios = new LinkedList(); 
-  private LinkedList<Galeria> listGalerias = new LinkedList();
-  
-  public LinkedList getListUsuarios(){
-    return listUsuarios;
-}
-
-public LinkedList getListGalerias(){
-    return listGalerias;
-}
-
-public void setListUsuarios(LinkedList lista){
-    this.listUsuarios = lista;
-}
-
-public void setListGalerias(LinkedList lista){
-    this.listGalerias = lista;
-}
-  
+  private Usuario usuario;
+  private static final Database INSTANCE = new Database();
   /**
    * Metodo que devuelve verdadero si el archivo existe, caso contrario falso
    * @return falso o verdadero
@@ -52,6 +36,17 @@ public void setListGalerias(LinkedList lista){
        return archivo.exists();
   }
   
+  public static Database getInstance(){
+      return INSTANCE;
+  }
+  
+  public void setUsuario(Usuario usuario){
+      this.usuario = usuario;
+  }
+  
+  public Usuario getUsuario(){
+      return usuario;
+  }
   /**
    * Metodo que crea el archivo de base de datos en blanco
    */
@@ -82,22 +77,18 @@ public void setListGalerias(LinkedList lista){
         }
   }
   
-  /**
-   * Metodo que lee la base de datos para cargar la informacion
-   */
-  public void leerDatabase() throws FileNotFoundException, IOException, ParseException{
+  public ArrayList<Usuario> getUsuarios() throws IOException, ParseException{
+      ArrayList<Usuario> listUsers = new ArrayList();
       if(existeArchivo()){
-          
-          //parseo el archivo json 
-           Object ob = new JSONParser().parse(new FileReader("database.json"));
-           JSONObject js = (JSONObject) ob;
-           
-           //obtengo la info de la lista de los usuarios y galerias
-           JSONArray arrUsuarios = (JSONArray) js.get("usuarios");
-           JSONArray arrGalerias = (JSONArray) js.get("galerias");
-          
-           //en caso de no existir ningun usuario
-           if(arrUsuarios.isEmpty()) return;
+          try {
+              //parseo el archivo json
+              Object ob = new JSONParser().parse(new FileReader("database.json"));
+              JSONObject js = (JSONObject) ob;
+              
+              //obtengo la info de la lista de los usuarios y galerias
+              JSONArray arrUsuarios = (JSONArray) js.get("usuarios");
+              
+              if(arrUsuarios.isEmpty()) return new ArrayList<Usuario>();
            
            
            //carga los usuarios a memoria
@@ -105,22 +96,43 @@ public void setListGalerias(LinkedList lista){
               JSONObject usuarios = (JSONObject)arrUsuarios.get(i);
               String nombre = (String) usuarios.get("nombre");
               Usuario user = new Usuario(nombre);
-              listUsuarios.add(user);
+              listUsers.add(user);
            }
            
-           //En caso de no existir ninguna galeria
-           if(arrGalerias.isEmpty())return;
-           
-           //carga las galerias a memoria
-           for (int i = 0; i < arrGalerias.size(); i++) {
+          } catch (FileNotFoundException ex) {
+              Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+          }
+      }
+      return listUsers;
+  }
+  
+  public ArrayList<Galeria> getGalerias() throws FileNotFoundException, IOException{
+      ArrayList<Galeria> listGaleria = new ArrayList();
+      try { 
+          //parseo el archivo json
+          Object ob = new JSONParser().parse(new FileReader("database.json"));
+          JSONObject js = (JSONObject) ob;
+          
+          //obtengo la info de la lista de los usuarios y galerias
+          JSONArray arrUsuarios = (JSONArray) js.get("usuarios");
+          JSONArray arrGalerias = (JSONArray) js.get("galerias");
+          
+          //en caso de no existir ningun usuario
+          if(arrUsuarios.isEmpty()) return new ArrayList();
+          
+          //En caso de no existir ninguna galeria
+          if(arrGalerias.isEmpty())return new ArrayList();
+          
+          //carga las galerias a memoria
+          for (int i = 0; i < arrGalerias.size(); i++) {
               /* cada galeria tiene esta estructura
-               {
-                album:[],
-                foto:[],
-                personas:[],
-                usuario:""
-               }
-               */
+              {
+              album:[],
+              foto:[],
+              personas:[],
+              usuario:""
+              }
+              */
               JSONObject galeria = (JSONObject)arrGalerias.get(i);
               
               //obtengo los albumes, fotos, personas y del usuario de esta galeria
@@ -128,71 +140,71 @@ public void setListGalerias(LinkedList lista){
               JSONArray fotos = (JSONArray) galeria.get("fotos");
               JSONArray personas = (JSONArray) galeria.get("personas");
               String usuario = (String) galeria.get("usuario");
-              
               //Contruyo el usario
               Usuario user = new Usuario(usuario);
               
               //Armo la lista de los albumes
-              List<Album> listAlbum = new LinkedList();
+              ArrayList<Album> listAlbum = new ArrayList();
               if(!albumes.isEmpty()){
                   for (int j = 0; j < albumes.size(); j++){
-                  JSONObject album = (JSONObject)albumes.get(j);
-                  String nombreAlbum = (String) album.get("nombre");
-                  String descripcionAlbum = (String) album.get("descripcion");
-                  Album newAlbum = new Album(nombreAlbum,descripcionAlbum);
-                  listAlbum.add(newAlbum);
-              }
+                      JSONObject album = (JSONObject)albumes.get(j);
+                      String nombreAlbum = (String) album.get("nombre");
+                      String descripcionAlbum = (String) album.get("descripcion");
+                      Album newAlbum = new Album(nombreAlbum,descripcionAlbum);
+                      listAlbum.add(newAlbum);
+                  }
               }
               
               //Armo la lista de fotos
-              List<Foto> listFoto = new LinkedList();
+              ArrayList<Foto> listFoto = new ArrayList();
               if(!fotos.isEmpty()){
                   for (int k = 0; k < fotos.size(); k++){
-                  JSONObject foto = (JSONObject)fotos.get(k);//obtengo objeto de la lista
-                  String idFoto = (String) foto.get("id");
-                  String descripcionFoto = (String) foto.get("descripcion");
-                  String lugarFoto = (String) foto.get("lugar");
-                  String fechaFoto = (String) foto.get("fecha");
-                  String albumFoto = (String) foto.get("album");
-                  Foto newFoto = new Foto(idFoto,descripcionFoto,lugarFoto,fechaFoto,albumFoto);
-                  listFoto.add(newFoto);
-              }
+                      JSONObject foto = (JSONObject)fotos.get(k);//obtengo objeto de la lista
+                      String idFoto = (String) foto.get("id");
+                      String descripcionFoto = (String) foto.get("descripcion");
+                      String lugarFoto = (String) foto.get("lugar");
+                      String fechaFoto = (String) foto.get("fecha");
+                      String albumFoto = (String) foto.get("album");
+                      Foto newFoto = new Foto(idFoto,descripcionFoto,lugarFoto,fechaFoto,albumFoto);
+                      listFoto.add(newFoto);
+                  }
               }
               
               //Armo la lista de Personas
-              List<Persona> listPersona = new LinkedList();
+              ArrayList<Persona> listPersona = new ArrayList();
               if(!personas.isEmpty()){
-                 for (int h = 0; h < personas.size(); h++){
-                  JSONObject persona = (JSONObject)personas.get(h);//obtengo objeto de la lista
-                  String nombrePersona = (String) persona.get("nombre");
-                  String idFotoPersona = (String) persona.get("idfoto");
-                  Persona newPersona = new Persona(nombrePersona,idFotoPersona);
-                  listPersona.add(newPersona);
-              } 
+                  for (int h = 0; h < personas.size(); h++){
+                      JSONObject persona = (JSONObject)personas.get(h);//obtengo objeto de la lista
+                      String nombrePersona = (String) persona.get("nombre");
+                      String idFotoPersona = (String) persona.get("idfoto");
+                      Persona newPersona = new Persona(nombrePersona,idFotoPersona);
+                      listPersona.add(newPersona);
+                  } 
               }
               
               //Armo la galeria
               Galeria  newGaleria = new Galeria(listAlbum,listFoto,listPersona,user);
               
               //Agrego a la lista de galerias
-              listGalerias.add(newGaleria);
-           }
-      }else{
-          crearDatabase();
-          crearDirectorio();
+              listGaleria.add(newGaleria);
+          }
+         
+      } catch (ParseException ex) {
+          Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
       }
-  }
+      return listGaleria;     
+ }
    
- public boolean existeUsuario(String nombre){
-     Iterator<Usuario> it = listUsuarios.iterator();
-     while(it.hasNext()){
-         if(it.next().getNombre() == nombre) return true;
-     }
+ public boolean existeUsuario(String nombre) throws IOException, ParseException{
+    ArrayList<Usuario> usuarios = getUsuarios();
+    for(int i=0; i < usuarios.size();i++){
+        if(usuarios.get(i).getNombre().equals(nombre))return true;
+    }
      return false;
  }
  
- public Usuario getUsuario(String nombre){
-     Iterator<Usuario> it = listUsuarios.iterator();
+ public Usuario getUsuario(String nombre) throws IOException, ParseException{
+     Iterator<Usuario> it = getUsuarios().iterator();
      while(it.hasNext()){
          Usuario user = it.next();
          if(user.getNombre() == nombre) return user;
@@ -200,31 +212,35 @@ public void setListGalerias(LinkedList lista){
      return new Usuario("vacio");
  }
  
- public boolean insertUsuario(String nombre){
-     if(nombre == null || nombre == "") return false;
-     if(existeUsuario(nombre)) return false;
-     Usuario user = new Usuario(nombre);
-     listUsuarios.add(user);
-     return true;
- }
  
- public Galeria getGaleriaByUsuario(String nombre){
+ public Galeria getGaleriaByUsuario(String nombre) throws IOException, ParseException{
      if(existeUsuario(nombre)){
-        Iterator<Galeria> itG = listGalerias.iterator();
+        Iterator<Galeria> itG = getGalerias().iterator();
         while(itG.hasNext()){
             Galeria galeri = itG.next();
-           if(galeri.getUsuario().getNombre() == nombre){
+           if(galeri.getUsuario().getNombre().equals(nombre)){
                return galeri;
            }
         }
      }
-     LinkedList<Album> album = new LinkedList();
-     LinkedList<Foto> foto = new LinkedList();
-     LinkedList<Persona> persona = new LinkedList();
+     ArrayList<Album> album = new ArrayList();
+     ArrayList<Foto> foto = new ArrayList();
+     ArrayList<Persona> persona = new ArrayList();
      Usuario user = getUsuario(nombre);
      return new Galeria(album,foto,persona,user);
  }
  
+ public ArrayList<Foto> getFotoByAlbum(ArrayList<Foto> fotos, Album album){
+     ArrayList<Foto> fotosFromAlbum = new ArrayList();
+     if(fotos.size() == 0) return new ArrayList();
+     if(album.getNombre() == null || album.getNombre() == "") return new ArrayList();
+     for(int i=0;i<fotos.size();i++){
+         if(album.getNombre().equals(fotos.get(i).getAlbum())){
+             fotosFromAlbum.add(fotos.get(i));
+         }
+     }
+     return fotosFromAlbum;
+ }
  
  
  

@@ -8,6 +8,8 @@ import ec.edu.espol.util.LinkedList;
 import ec.edu.espol.util.List;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.Database;
 import model.Usuario;
 import org.json.simple.parser.ParseException;
@@ -35,6 +37,11 @@ public class DatabaseTest {
     // @Test
     // public void hello() {}
     
+    @Test
+    public void testExisteArchivo(){
+       boolean creado = database.existeArchivo();
+       assertEquals(true,creado);
+    }
     
     @Test
     public void testCreateDatabase(){
@@ -42,22 +49,7 @@ public class DatabaseTest {
        boolean creado = database.existeArchivo();
        assertEquals(true,creado);
     }
-    
-   @Test
-   public void testExisteUsuario(){
-       LinkedList usuarios = database.getListUsuarios();
-       Usuario user = new Usuario("Jose Ponce");
-       usuarios.add(user);
-       assertEquals(true,database.existeUsuario("Jose Ponce"));
-    }
-  
-   @Test
-   public void testGetUsuario(){
-       LinkedList usuarios = database.getListUsuarios();
-       Usuario user = new Usuario("Pedro Pablo");
-       usuarios.add(user);
-       assertEquals(user,database.getUsuario("Pedro Pablo"));
-   }
+   
 
     @BeforeClass
     public static void setUpClass() throws Exception {

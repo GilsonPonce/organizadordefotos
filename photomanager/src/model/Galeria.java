@@ -11,27 +11,27 @@ import ec.edu.espol.util.*;
  * @author Gilson Ponce
  */
 public class Galeria {
-     private List<Album> albumes;
-     private List<Foto> fotos;
-     private List<Persona> personas;
+     private ArrayList<Album> albumes;
+     private ArrayList<Foto> fotos;
+     private ArrayList<Persona> personas;
      private Usuario user;
      
-     public Galeria(List<Album> albumes, List<Foto> fotos, List<Persona> personas, Usuario user){
+     public Galeria(ArrayList<Album> albumes, ArrayList<Foto> fotos, ArrayList<Persona> personas, Usuario user){
         this.albumes = albumes;
         this.fotos  = fotos;
         this.personas = personas;
         this.user = user;
      }
      
-     public void setAlbumes(List<Album> albumes){
+     public void setAlbumes(ArrayList<Album> albumes){
          this.albumes = albumes;
      }
      
-     public void setFotos(List<Foto> fotos){
+     public void setFotos(ArrayList<Foto> fotos){
          this.fotos = fotos;
      }
      
-     public void setPersonas(List<Persona> personas){
+     public void setPersonas(ArrayList<Persona> personas){
          this.personas = personas;
      }
      
