@@ -13,6 +13,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -48,25 +49,33 @@ public class ViewLoginController implements Initializable {
     }    
 
     @FXML
-    private void login() {
-        Database database = new Database();
-        ControllerState state = new ControllerState();
-        String nombre = this.txtloginusuario.getText();
-        if(!"".equals(nombre) && nombre != null){
-            if(!database.existeUsuario(nombre)){
-                database.insertUsuario(nombre);
-            }else{
-                state.nombreUsuario = nombre;
-            }
+    private void login(ActionEvent event) {
+        if(validarLogin()){
+            Node source = (Node) event.getSource();
+            Stage stage = (Stage) source.getScene().getWindow();
+            stage.close();
             abrirMain();
         }else{
             mostrarAlertWarning();
         }
-        
-       
+    }
+      
+
+    @FXML
+    private void enter(KeyEvent event) {
+        if(event.getCode() == KeyCode.ENTER){
+            if(validarLogin()){
+                Node source = (Node) event.getSource();
+                Stage stage = (Stage) source.getScene().getWindow();
+                stage.close();
+                abrirMain();
+            }else{
+                mostrarAlertWarning();
+            }
+        }
     }
     
-    private void mostrarAlertWarning() {
+     private void mostrarAlertWarning() {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setHeaderText(null);
         alert.setTitle("Info");
@@ -74,26 +83,8 @@ public class ViewLoginController implements Initializable {
         alert.showAndWait();
     }
     
-    
-
-    @FXML
-    private void enter(KeyEvent event) {
-        if(event.getCode() == KeyCode.ENTER){
-             login();
-        }
-    }
-    
     private void abrirMain(){
         try {
-            /*Stage stage = new Stage();
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Main.class.getResource("/view/viewMain.fxml"));
-            Pane ventana = (Pane) loader.load();
-            Scene scene = new Scene(ventana);
-            stage.setScene(scene);
-            //primaryStage.getIcons().add(new Image("/path/to/stackoverflow.jpg"));
-            stage.setTitle("Photo Manager");
-            stage.show();*/
             Stage stage = new Stage();
             Parent root = FXMLLoader.load(getClass().getResource("/view/viewMain.fxml"));
             Scene scene = new Scene(root);
@@ -102,6 +93,21 @@ public class ViewLoginController implements Initializable {
             stage.show();
         } catch (IOException ex) {
             Logger.getLogger(ViewLoginController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private boolean validarLogin(){
+        Database database = new Database();
+        ControllerState state = new ControllerState();
+        String nombre = this.txtloginusuario.getText();
+        if(!"".equals(nombre) && nombre != null){
+            if(!database.existeUsuario(nombre)){
+                database.insertUsuario(nombre);
+            }
+            state.nombreUsuario = nombre;
+            return true;
+        }else{
+            return false;
         }
     }
     
