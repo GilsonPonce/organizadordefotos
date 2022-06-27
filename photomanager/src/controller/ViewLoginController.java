@@ -92,7 +92,7 @@ public class ViewLoginController implements Initializable {
      private void mostrarAlertWarning() {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setHeaderText(null);
-        alert.setTitle("Info");
+        alert.setTitle("Campos vacios");
         alert.setContentText("Ingrese un nombre valido");
         alert.showAndWait();
     }

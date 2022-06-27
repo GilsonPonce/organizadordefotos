@@ -39,7 +39,7 @@ import org.json.simple.parser.ParseException;
  *
  * @author GJPONCE
  */
-public class controllerMain implements Initializable {
+public final class controllerMain implements Initializable {
 
     @FXML
     private Button BuscarFoto;
@@ -57,8 +57,12 @@ public class controllerMain implements Initializable {
     private Button btnAgregarAlbum;
     @FXML
     private Button btnAgregarFoto;
+   
+    private static final controllerMain INSTANCEMAIN = new controllerMain();
     
-    private String usuario;
+    public static controllerMain getInstance(){
+      return INSTANCEMAIN;
+    }
 
     /**
      * Initializes the controller class.
@@ -66,13 +70,14 @@ public class controllerMain implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
-            cargarGaleria();
+            cargarDatosIniciales();
         } catch (IOException ex) {
             Logger.getLogger(controllerMain.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ParseException ex) {
             Logger.getLogger(controllerMain.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+   
 
     @FXML
     private void BuscarInTF(MouseEvent event) {
@@ -92,13 +97,10 @@ public class controllerMain implements Initializable {
     /**
      * Metodo para cargar la galeria del usuario al iniciar la aplicacion
      */
-    private void cargarGaleria() throws IOException, ParseException{
+    private void cargarGaleria(Galeria galeria) throws IOException, ParseException{
         Database database = Database.getInstance();
-        Usuario u = database.getUsuario();
-        System.out.println(u.getNombre());
-        Galeria userGaleria = database.getGaleriaByUsuario(u.getNombre());
-        ArrayList<Album> albumes = (ArrayList<Album>) userGaleria.getAlbumes();
-        ArrayList<Foto> fotos =  (ArrayList<Foto>) userGaleria.getFotos();
+        ArrayList<Album> albumes = (ArrayList<Album>) galeria.getAlbumes();
+        ArrayList<Foto> fotos =  (ArrayList<Foto>) galeria.getFotos();
         TreeItem rootItem = new TreeItem("Galeria");
         if(albumes.size() == 0)return;
         if(fotos.size() == 0)return;
@@ -125,6 +127,13 @@ public class controllerMain implements Initializable {
             }
         }
         this.TVRoot.setRoot(rootItem);
+    }
+    
+    public void cargarDatosIniciales() throws IOException, ParseException{
+        Database database = Database.getInstance();
+        Usuario u = database.getUsuario();
+        Galeria userGaleria = database.getGaleria(u.getNombre());
+        cargarGaleria(userGaleria);
     }
 
     @FXML
@@ -165,9 +174,4 @@ public class controllerMain implements Initializable {
             Logger.getLogger(ControllerViewRegistroFoto.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public void setUsuario(String usuario){
-        this.usuario = usuario;
-    }
-
 }

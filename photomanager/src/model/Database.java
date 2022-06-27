@@ -24,17 +24,9 @@ import org.json.simple.parser.ParseException;
  * @version 1.0.0
  */
 public final class Database{
-  //Campos de la clase
-  private final File archivo = new File("database.json");
+
   private Usuario usuario;
   private static final Database INSTANCE = new Database();
-  /**
-   * Metodo que devuelve verdadero si el archivo existe, caso contrario falso
-   * @return falso o verdadero
-   */
-  public Boolean existeArchivo(){
-       return archivo.exists();
-  }
   
   public static Database getInstance(){
       return INSTANCE;
@@ -50,20 +42,62 @@ public final class Database{
   /**
    * Metodo que crea el archivo de base de datos en blanco
    */
-  public void crearDatabase(){
-       JSONObject obj = new JSONObject();
-       JSONArray listUsuarios = new JSONArray();
-       JSONArray listGalerias = new JSONArray();
-       obj.put("usuarios",listUsuarios);
-       obj.put("galerias",listGalerias);
-       try{
-           FileWriter file = new FileWriter("database.json");
+  public void escribirArchivo(String nombre,JSONObject obj){
+      try{
+           FileWriter file = new FileWriter(nombre+".json");
            file.write(obj.toJSONString());
 	   file.flush();
 	   file.close();
        }catch(IOException e){
            System.out.print("Error al crear el archivo: "+e);
        }
+  }
+  
+  
+  public void crearDatabase(String nombre){
+       JSONObject obj = new JSONObject();
+       JSONArray listAlbumes = new JSONArray();
+       JSONArray listFotos = new JSONArray();
+       JSONArray listPersonas = new JSONArray();
+       obj.put("albumes",listAlbumes);
+       obj.put("fotos",listPersonas);
+       obj.put("personas",listPersonas);
+       escribirArchivo(nombre,obj);
+  }
+  
+  public void recrearDatabase(String nombre,Galeria galeria){
+       JSONObject obj = new JSONObject();
+       JSONArray listAlbumes = new JSONArray();
+       ArrayList<Album> album = galeria.getAlbumes();
+       for(int i=0; i<album.size(); i++){
+         JSONObject objalbum = new JSONObject();
+         objalbum.put("nombre",album.get(i).getNombre());
+         objalbum.put("descripcion",album.get(i).getDescripcion());
+         listAlbumes.add(objalbum);
+       }
+       JSONArray listFotos = new JSONArray();
+       ArrayList<Foto> foto = galeria.getFotos();
+       for(int k=0; k<foto.size(); k++){
+         JSONObject objfoto = new JSONObject();
+         objfoto.put("id",foto.get(k).getId());
+         objfoto.put("descripcion",foto.get(k).getDescripcion());
+         objfoto.put("lugar",foto.get(k).getLugar());
+         objfoto.put("fecha",foto.get(k).getFecha());
+         objfoto.put("album",foto.get(k).getAlbum());
+         listFotos.add(objfoto);
+       }
+       JSONArray listPersonas = new JSONArray();
+        ArrayList<Persona> personas = galeria.getPersonas();
+       for(int l=0; l<personas.size(); l++){
+         JSONObject objpersona = new JSONObject();
+         objpersona.put("nombre",personas.get(l).getNombre());
+         objpersona.put("idfoto",personas.get(l).getIdFoto());
+         listPersonas.add(objpersona);
+       }
+       obj.put("albumes",listAlbumes);
+       obj.put("fotos",listFotos);
+       obj.put("personas",listPersonas);
+       escribirArchivo(nombre,obj);
   }
   
   public void crearDirectorio(){
@@ -77,77 +111,35 @@ public final class Database{
         }
   }
   
-  public ArrayList<Usuario> getUsuarios() throws IOException, ParseException{
-      ArrayList<Usuario> listUsers = new ArrayList();
-      if(existeArchivo()){
-          try {
-              //parseo el archivo json
-              Object ob = new JSONParser().parse(new FileReader("database.json"));
-              JSONObject js = (JSONObject) ob;
-              
-              //obtengo la info de la lista de los usuarios y galerias
-              JSONArray arrUsuarios = (JSONArray) js.get("usuarios");
-              
-              if(arrUsuarios.isEmpty()) return new ArrayList<Usuario>();
-           
-           
-           //carga los usuarios a memoria
-           for (int i = 0; i < arrUsuarios.size(); i++) {
-              JSONObject usuarios = (JSONObject)arrUsuarios.get(i);
-              String nombre = (String) usuarios.get("nombre");
-              Usuario user = new Usuario(nombre);
-              listUsers.add(user);
-           }
-           
-          } catch (FileNotFoundException ex) {
-              Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
-          }
-      }
-      return listUsers;
+  public Boolean existeArchivo(String nombre){
+       File archivo1 = new File(nombre+".json");
+       return archivo1.exists();
   }
   
-  public ArrayList<Galeria> getGalerias() throws FileNotFoundException, IOException{
-      ArrayList<Galeria> listGaleria = new ArrayList();
+  public Galeria getGaleria(String nombre) throws FileNotFoundException, IOException, ParseException{
+       ArrayList<Foto> listFoto = new ArrayList();
+       ArrayList<Persona> listPersona = new ArrayList();
+       ArrayList<Album> listAlbum = new ArrayList();
+      if(!existeUsuario(nombre)){
+          crearDatabase(nombre);
+          crearDirectorio();
+          return new Galeria(listAlbum,listFoto,listPersona);
+      }
       try { 
           //parseo el archivo json
-          Object ob = new JSONParser().parse(new FileReader("database.json"));
+          Object ob = new JSONParser().parse(new FileReader(nombre+".json"));
           JSONObject js = (JSONObject) ob;
           
           //obtengo la info de la lista de los usuarios y galerias
-          JSONArray arrUsuarios = (JSONArray) js.get("usuarios");
-          JSONArray arrGalerias = (JSONArray) js.get("galerias");
+          JSONArray arrAlbumes = (JSONArray) js.get("albumes");
+          JSONArray arrFotos = (JSONArray) js.get("fotos");
+          JSONArray arrPersonas = (JSONArray) js.get("personas");
           
-          //en caso de no existir ningun usuario
-          if(arrUsuarios.isEmpty()) return new ArrayList();
-          
-          //En caso de no existir ninguna galeria
-          if(arrGalerias.isEmpty())return new ArrayList();
-          
-          //carga las galerias a memoria
-          for (int i = 0; i < arrGalerias.size(); i++) {
-              /* cada galeria tiene esta estructura
-              {
-              album:[],
-              foto:[],
-              personas:[],
-              usuario:""
-              }
-              */
-              JSONObject galeria = (JSONObject)arrGalerias.get(i);
+          //Armo la lista de los albumes
               
-              //obtengo los albumes, fotos, personas y del usuario de esta galeria
-              JSONArray albumes = (JSONArray) galeria.get("albumes");
-              JSONArray fotos = (JSONArray) galeria.get("fotos");
-              JSONArray personas = (JSONArray) galeria.get("personas");
-              String usuario = (String) galeria.get("usuario");
-              //Contruyo el usario
-              Usuario user = new Usuario(usuario);
-              
-              //Armo la lista de los albumes
-              ArrayList<Album> listAlbum = new ArrayList();
-              if(!albumes.isEmpty()){
-                  for (int j = 0; j < albumes.size(); j++){
-                      JSONObject album = (JSONObject)albumes.get(j);
+              if(!arrAlbumes.isEmpty()){
+                  for (int j = 0; j < arrAlbumes.size(); j++){
+                      JSONObject album = (JSONObject)arrAlbumes.get(j);
                       String nombreAlbum = (String) album.get("nombre");
                       String descripcionAlbum = (String) album.get("descripcion");
                       Album newAlbum = new Album(nombreAlbum,descripcionAlbum);
@@ -155,11 +147,11 @@ public final class Database{
                   }
               }
               
-              //Armo la lista de fotos
-              ArrayList<Foto> listFoto = new ArrayList();
-              if(!fotos.isEmpty()){
-                  for (int k = 0; k < fotos.size(); k++){
-                      JSONObject foto = (JSONObject)fotos.get(k);//obtengo objeto de la lista
+           //Armo la lista de fotos
+             
+              if(!arrFotos.isEmpty()){
+                  for (int k = 0; k < arrFotos.size(); k++){
+                      JSONObject foto = (JSONObject)arrFotos.get(k);//obtengo objeto de la lista
                       String idFoto = (String) foto.get("id");
                       String descripcionFoto = (String) foto.get("descripcion");
                       String lugarFoto = (String) foto.get("lugar");
@@ -171,65 +163,27 @@ public final class Database{
               }
               
               //Armo la lista de Personas
-              ArrayList<Persona> listPersona = new ArrayList();
-              if(!personas.isEmpty()){
-                  for (int h = 0; h < personas.size(); h++){
-                      JSONObject persona = (JSONObject)personas.get(h);//obtengo objeto de la lista
+              if(!arrPersonas.isEmpty()){
+                  for (int h = 0; h < arrPersonas.size(); h++){
+                      JSONObject persona = (JSONObject)arrPersonas.get(h);//obtengo objeto de la lista
                       String nombrePersona = (String) persona.get("nombre");
                       String idFotoPersona = (String) persona.get("idfoto");
                       Persona newPersona = new Persona(nombrePersona,idFotoPersona);
                       listPersona.add(newPersona);
                   } 
               }
-              
-              //Armo la galeria
-              Galeria  newGaleria = new Galeria(listAlbum,listFoto,listPersona,user);
-              
-              //Agrego a la lista de galerias
-              listGaleria.add(newGaleria);
-          }
-         
       } catch (ParseException ex) {
           Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
       }
-      return listGaleria;     
+      return new Galeria(listAlbum,listFoto,listPersona);     
  }
-   
+  
+ 
+  
  public boolean existeUsuario(String nombre) throws IOException, ParseException{
-    ArrayList<Usuario> usuarios = getUsuarios();
-    for(int i=0; i < usuarios.size();i++){
-        if(usuarios.get(i).getNombre().equals(nombre))return true;
-    }
-     return false;
+     return existeArchivo(nombre);
  }
- 
- public Usuario getUsuario(String nombre) throws IOException, ParseException{
-     Iterator<Usuario> it = getUsuarios().iterator();
-     while(it.hasNext()){
-         Usuario user = it.next();
-         if(user.getNombre() == nombre) return user;
-     }
-     return new Usuario("vacio");
- }
- 
- 
- public Galeria getGaleriaByUsuario(String nombre) throws IOException, ParseException{
-     if(existeUsuario(nombre)){
-        Iterator<Galeria> itG = getGalerias().iterator();
-        while(itG.hasNext()){
-            Galeria galeri = itG.next();
-           if(galeri.getUsuario().getNombre().equals(nombre)){
-               return galeri;
-           }
-        }
-     }
-     ArrayList<Album> album = new ArrayList();
-     ArrayList<Foto> foto = new ArrayList();
-     ArrayList<Persona> persona = new ArrayList();
-     Usuario user = getUsuario(nombre);
-     return new Galeria(album,foto,persona,user);
- }
- 
+
  public ArrayList<Foto> getFotoByAlbum(ArrayList<Foto> fotos, Album album){
      ArrayList<Foto> fotosFromAlbum = new ArrayList();
      if(fotos.size() == 0) return new ArrayList();
@@ -242,7 +196,15 @@ public final class Database{
      return fotosFromAlbum;
  }
  
- 
+public void ingresarAlbum(String nombre,Album album) throws IOException, FileNotFoundException, ParseException{
+      try {
+          Galeria galeria = getGaleria(nombre);
+          galeria.getAlbumes().add(album);
+          recrearDatabase(nombre,galeria);
+      } catch (ParseException ex) {
+          Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+      }
+} 
  
     
 }

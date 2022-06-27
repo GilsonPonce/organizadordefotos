@@ -36,19 +36,6 @@ public class DatabaseTest {
     //
     // @Test
     // public void hello() {}
-    
-    @Test
-    public void testExisteArchivo(){
-       boolean creado = database.existeArchivo();
-       assertEquals(true,creado);
-    }
-    
-    @Test
-    public void testCreateDatabase(){
-       database.crearDatabase();
-       boolean creado = database.existeArchivo();
-       assertEquals(true,creado);
-    }
    
 
     @BeforeClass

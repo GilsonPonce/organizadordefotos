@@ -14,13 +14,11 @@ public class Galeria {
      private ArrayList<Album> albumes;
      private ArrayList<Foto> fotos;
      private ArrayList<Persona> personas;
-     private Usuario user;
      
-     public Galeria(ArrayList<Album> albumes, ArrayList<Foto> fotos, ArrayList<Persona> personas, Usuario user){
+     public Galeria(ArrayList<Album> albumes, ArrayList<Foto> fotos, ArrayList<Persona> personas){
         this.albumes = albumes;
         this.fotos  = fotos;
         this.personas = personas;
-        this.user = user;
      }
      
      public void setAlbumes(ArrayList<Album> albumes){
@@ -35,25 +33,21 @@ public class Galeria {
          this.personas = personas;
      }
      
-     public void setUsuario(Usuario user){
-         this.user = user;
-     }
+
      
-     public List getAlbumes(){
+     public ArrayList getAlbumes(){
          return albumes;
      }
      
-     public List getFotos(){
+     public ArrayList getFotos(){
          return fotos;
      }
      
-     public List getPersonas(){
+     public ArrayList getPersonas(){
          return personas;
      }
      
-     public Usuario getUsuario(){
-         return user;
-     }
+ 
      
      
      
