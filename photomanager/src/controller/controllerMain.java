@@ -18,6 +18,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
@@ -90,44 +92,48 @@ public final class controllerMain implements Initializable {
 
     @FXML
     private void BuscarInTF(MouseEvent event) throws IOException, FileNotFoundException, ParseException {
-        PanelparaFotos.getChildren().clear();
-        String Lugar=TFLugar.getText();
-        String Persona=TFPersona.getText();
-        Galeria temporal=Database.getGaleria(this.usuario.getNombre());
-        if(CBPorLugar.isSelected()){
-           ArrayList<Foto>tmp=temporal.getFotos();
-           ArrayList<Foto>fotosCond=new ArrayList<>();
-           for(Foto foto: tmp){
-               if(TFLugar.getText()!=null){
-                   if(Lugar.equals(foto.getLugar())){
-                       fotosCond.add(foto);
+        try{
+            String Lugar=TFLugar.getText();
+            String Persona=TFPersona.getText();
+            Galeria temporal=Database.getGaleria(this.usuario.getNombre());
+            if(CBPorLugar.isSelected()){
+               ArrayList<Foto>tmp=temporal.getFotos();
+               ArrayList<Foto>fotosCond=new ArrayList<>();
+               for(Foto foto: tmp){
+                   if(TFLugar.getText()!=null){
+                       if(Lugar.equals(foto.getLugar())){
+                           fotosCond.add(foto);
+                       }
                    }
                }
-           }
-           for(Foto f:fotosCond){
-                Image image= new Image(f.getId()+".json");//f.getId()+".json" HASTA SABER LA UBICACION DE DONDE SE GUARDARAN LAS FOTOS
-                ImageView iv= new ImageView(image);
-                PanelparaFotos.getChildren().add(iv);
-           }
-        }
-        
-        if(CBPorPersona.isSelected()){
-           ArrayList<Persona>tmp=temporal.getPersonas();
-           ArrayList<Persona>fotosCond=new ArrayList<>();
-           for(Persona persona: tmp){
-               if(TFPersona.getText()!=null){
-                   if(Persona.equals(persona.getNombre())){
-                       fotosCond.add(persona);
+               for(Foto f:fotosCond){
+                    Image image= new Image(f.getId()+".json");//f.getId()+".json" HASTA SABER LA UBICACION DE DONDE SE GUARDARAN LAS FOTOS
+                    ImageView iv= new ImageView(image);
+                    PanelparaFotos.getChildren().add(iv);
+               }
+            }
+
+            if(CBPorPersona.isSelected()){
+               ArrayList<Persona>tmp=temporal.getPersonas();
+               ArrayList<Persona>fotosCond=new ArrayList<>();
+               for(Persona persona: tmp){
+                   if(TFPersona.getText()!=null){
+                       if(Persona.equals(persona.getNombre())){
+                           fotosCond.add(persona);
+                       }
                    }
                }
-           }
-           for(Persona p:fotosCond){
-                Image image= new Image(p.getIdFoto()+".json");//f.getId()+".json" HASTA SABER LA UBICACION DE DONDE SE GUARDARAN LAS FOTOS
-                ImageView iv= new ImageView(image);
-                PanelparaFotos.getChildren().add(iv);
-           }
+               for(Persona p:fotosCond){
+                    Image image= new Image(p.getIdFoto()+".json");//f.getId()+".json" HASTA SABER LA UBICACION DE DONDE SE GUARDARAN LAS FOTOS
+                    ImageView iv= new ImageView(image);
+                    PanelparaFotos.getChildren().add(iv);
+               }
+            }
+        }  
+        catch(NullPointerException e){
+            Alert a=new Alert(Alert.AlertType.WARNING,"CAMPOS VACIOS");
+            a.show(); 
         }
-        
     }
     
     /**
@@ -174,7 +180,7 @@ public final class controllerMain implements Initializable {
 
     @FXML
     private void AgregarFoto(MouseEvent event) {
-                try {
+        try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/viewRegistroFoto.fxml"));
             Parent root = loader.load();
             ControllerViewRegistroFoto ven = loader.getController();
