@@ -13,9 +13,9 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="676.0" prefWidth="979.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.controllerMain">
+<AnchorPane id="AnchorPane" prefHeight="676.0" prefWidth="979.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.controllerMain">
    <children>
-      <Pane id="pnlPhoto" layoutX="359.0" layoutY="14.0" prefHeight="366.0" prefWidth="603.0">
+      <Pane id="pnlPhoto" fx:id="PanelparaFotos" layoutX="415.0" layoutY="26.0" prefHeight="366.0" prefWidth="603.0">
          <children>
             <Button id="btnregresar" layoutX="22.0" layoutY="326.0" mnemonicParsing="false" text="&lt;" />
             <Button id="btnseguir" layoutX="59.0" layoutY="326.0" mnemonicParsing="false" text="&gt;" />
@@ -54,8 +54,8 @@
                   <Font name="System Bold" size="21.0" />
                </font>
             </Label>
-            <Button id="btnagregaralbum" fx:id="btnAgregarAlbum" layoutX="129.0" layoutY="18.0" mnemonicParsing="false" onAction="#agregarAlbum" text="Agregar Album" />
-            <Button id="btnagregarfoto" fx:id="btnAgregarFoto" layoutX="235.0" layoutY="18.0" mnemonicParsing="false" onAction="#agregarFoto" text="Agregar Foto" />
+            <Button id="btnagregaralbum" fx:id="btnAgregarAlbum" layoutX="129.0" layoutY="18.0" mnemonicParsing="false" onMouseClicked="#AgregarAlbum" text="Agregar Album" />
+            <Button id="btnagregarfoto" fx:id="btnAgregarFoto" layoutX="235.0" layoutY="18.0" mnemonicParsing="false" onMouseClicked="#AgregarFoto" text="Agregar Foto" />
             <Separator layoutY="60.0" prefHeight="3.0" prefWidth="340.0" />
             <Separator prefHeight="3.0" prefWidth="340.0" />
             <TreeView id="treeviewfile" fx:id="TVRoot" layoutX="12.0" layoutY="70.0" prefHeight="376.0" prefWidth="316.0" />

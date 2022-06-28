@@ -5,6 +5,7 @@
 package controller;
 
 import ec.edu.espol.util.*;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -23,6 +24,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
@@ -31,6 +34,7 @@ import model.Album;
 import model.Database;
 import model.Foto;
 import model.Galeria;
+import model.Persona;
 import model.Usuario;
 import org.json.simple.parser.ParseException;
 
@@ -57,12 +61,16 @@ public final class controllerMain implements Initializable {
     private Button btnAgregarAlbum;
     @FXML
     private Button btnAgregarFoto;
+    
+    public Usuario usuario;
    
     private static final controllerMain INSTANCEMAIN = new controllerMain();
     
     public static controllerMain getInstance(){
       return INSTANCEMAIN;
     }
+    @FXML
+    private Pane PanelparaFotos;
 
     /**
      * Initializes the controller class.
@@ -70,6 +78,7 @@ public final class controllerMain implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
+            TVRoot.getChildrenUnmodifiable().clear();
             cargarDatosIniciales();
         } catch (IOException ex) {
             Logger.getLogger(controllerMain.class.getName()).log(Level.SEVERE, null, ex);
@@ -80,18 +89,45 @@ public final class controllerMain implements Initializable {
    
 
     @FXML
-    private void BuscarInTF(MouseEvent event) {
-        /*
+    private void BuscarInTF(MouseEvent event) throws IOException, FileNotFoundException, ParseException {
+        PanelparaFotos.getChildren().clear();
         String Lugar=TFLugar.getText();
         String Persona=TFPersona.getText();
-        if(!(CBPorPersona.isSelected() && CBPorLugar.isSelected())){
-            TVRoot.setRoot(ti);//TRAER METODO QUE CARGE EL ARRAYLIST DE TODAS LAS FOTOS
-            TreeTableColumn<Foto,String>columna=new TreeTableColumn<>("Folder");
-            columna.setPrefWidth(150);
-            columna.setCellValueFactory((TreeTableColumn.CellDataFeatures<Foto,String>parametro)->
-                    new ReadOnlyStringWrapper()parametro.getValue().getAtributodelaFoto())//implementar metodo
-            );
-        }*/
+        Galeria temporal=Database.getGaleria(this.usuario.getNombre());
+        if(CBPorLugar.isSelected()){
+           ArrayList<Foto>tmp=temporal.getFotos();
+           ArrayList<Foto>fotosCond=new ArrayList<>();
+           for(Foto foto: tmp){
+               if(TFLugar.getText()!=null){
+                   if(Lugar.equals(foto.getLugar())){
+                       fotosCond.add(foto);
+                   }
+               }
+           }
+           for(Foto f:fotosCond){
+                Image image= new Image(f.getId()+".json");//f.getId()+".json" HASTA SABER LA UBICACION DE DONDE SE GUARDARAN LAS FOTOS
+                ImageView iv= new ImageView(image);
+                PanelparaFotos.getChildren().add(iv);
+           }
+        }
+        
+        if(CBPorPersona.isSelected()){
+           ArrayList<Persona>tmp=temporal.getPersonas();
+           ArrayList<Persona>fotosCond=new ArrayList<>();
+           for(Persona persona: tmp){
+               if(TFPersona.getText()!=null){
+                   if(Persona.equals(persona.getNombre())){
+                       fotosCond.add(persona);
+                   }
+               }
+           }
+           for(Persona p:fotosCond){
+                Image image= new Image(p.getIdFoto()+".json");//f.getId()+".json" HASTA SABER LA UBICACION DE DONDE SE GUARDARAN LAS FOTOS
+                ImageView iv= new ImageView(image);
+                PanelparaFotos.getChildren().add(iv);
+           }
+        }
+        
     }
     
     /**
@@ -137,8 +173,25 @@ public final class controllerMain implements Initializable {
     }
 
     @FXML
-    private void agregarAlbum(ActionEvent event) {
-        
+    private void AgregarFoto(MouseEvent event) {
+                try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/viewRegistroFoto.fxml"));
+            Parent root = loader.load();
+            ControllerViewRegistroFoto ven = loader.getController();
+            Scene scene = new Scene(root);
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Agregar Foto");
+            stage.setResizable(false);
+            stage.setScene(scene);
+            stage.showAndWait();
+        } catch (IOException ex) {
+            Logger.getLogger(ControllerViewRegistroFoto.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @FXML
+    private void AgregarAlbum(MouseEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/viewRegistroAlbum.fxml"));
             Parent root1 = loader.load();
@@ -152,26 +205,6 @@ public final class controllerMain implements Initializable {
             stage1.showAndWait();
         } catch (IOException ex) {
             Logger.getLogger(ControllerViewRegistroAlbum.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-    }
-
-    @FXML
-    private void agregarFoto(ActionEvent event) {
-        
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/viewRegistroFoto.fxml"));
-            Parent root = loader.load();
-            ControllerViewRegistroFoto ven = loader.getController();
-            Scene scene = new Scene(root);
-            Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle("Agregar Foto");
-            stage.setResizable(false);
-            stage.setScene(scene);
-            stage.showAndWait();
-        } catch (IOException ex) {
-            Logger.getLogger(ControllerViewRegistroFoto.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }
