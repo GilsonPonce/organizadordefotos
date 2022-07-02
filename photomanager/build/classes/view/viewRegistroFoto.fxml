@@ -7,9 +7,9 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="AnchorPane" maxHeight="231.0" maxWidth="400.0" minHeight="231.0" minWidth="400.0" prefHeight="231.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ControllerViewRegistroFoto">
+<AnchorPane id="AnchorPane" fx:id="PanelRegistroFoto" maxHeight="231.0" maxWidth="400.0" minHeight="231.0" minWidth="400.0" prefHeight="231.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ControllerViewRegistroFoto">
    <children>
-      <Button fx:id="btnRegistrarFoto" layoutX="168.0" layoutY="186.0" mnemonicParsing="false" onAction="#registrarFoto" text="Registrar" />
+      <Button fx:id="btnRegistrarFoto" layoutX="168.0" layoutY="186.0" mnemonicParsing="false" onMouseClicked="#registrarFoto" text="Registrar" />
       <Label layoutX="28.0" layoutY="65.0" text="Descripcion" />
       <TextField fx:id="txtDescripcion" layoutX="123.0" layoutY="61.0" prefHeight="25.0" prefWidth="250.0" />
       <Label layoutX="30.0" layoutY="94.0" text="Lugar" />
@@ -18,7 +18,7 @@
       <TextField fx:id="txtLugar" layoutX="123.0" layoutY="88.0" prefHeight="25.0" prefWidth="250.0" />
       <ComboBox fx:id="cmbAlbum" layoutX="123.0" layoutY="142.0" prefHeight="25.0" prefWidth="250.0" />
       <DatePicker fx:id="dpFecha" layoutX="123.0" layoutY="115.0" prefHeight="25.0" prefWidth="250.0" />
-      <Button fx:id="btnBuscarFoto" layoutX="349.0" layoutY="34.0" mnemonicParsing="false" onAction="#buscarFoto" text="..." />
+      <Button fx:id="btnBuscarFoto" layoutX="349.0" layoutY="34.0" mnemonicParsing="false" onMouseClicked="#buscarFoto" text="..." />
       <Label layoutX="28.0" layoutY="38.0" text="Foto" />
       <TextField fx:id="txtFoto" editable="false" layoutX="123.0" layoutY="34.0" prefHeight="25.0" prefWidth="223.0" />
    </children>

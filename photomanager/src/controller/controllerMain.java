@@ -65,6 +65,7 @@ public final class controllerMain implements Initializable {
     private Button btnAgregarFoto;
     
     public Usuario usuario;
+    
    
     private static final controllerMain INSTANCEMAIN = new controllerMain();
     
@@ -82,9 +83,7 @@ public final class controllerMain implements Initializable {
         try {
             TVRoot.getChildrenUnmodifiable().clear();
             cargarDatosIniciales();
-        } catch (IOException ex) {
-            Logger.getLogger(controllerMain.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ParseException ex) {
+        } catch (IOException | ParseException ex) {
             Logger.getLogger(controllerMain.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -148,7 +147,7 @@ public final class controllerMain implements Initializable {
         if(fotos.size() == 0)return;
         for(int j=0;j<fotos.size();j++){//llenar fotos sin album
             Foto fotoSelect = fotos.get(j);
-            if(fotoSelect.getAlbum()== "" || fotoSelect.getAlbum()== null){
+            if("".equals(fotoSelect.getAlbum()) || fotoSelect.getAlbum()== null){
                 rootItem.getChildren().add(new TreeItem(fotoSelect.getDescripcion()));
             }
         }

@@ -19,6 +19,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import model.Album;
 import model.Database;
@@ -46,9 +47,17 @@ public class ControllerViewRegistroAlbum implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
     }
+    
+    private void mostrarAlert() {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setHeaderText(null);
+        alert.setTitle("Campos vacios");
+        alert.setContentText("Algun valor requerido esta en blanco");
+        alert.showAndWait();
+    }
 
     @FXML
-    private void registrarAlbum(ActionEvent event) throws IOException, FileNotFoundException, ParseException {
+    private void registrarAlbum(MouseEvent event) throws IOException, FileNotFoundException, ParseException {
         String nombreAlbum = txtnombre.getText();
         String descripcionALbum = txtadescripcion.getText();
         Database databaseAlbum = Database.getInstance();
@@ -65,17 +74,7 @@ public class ControllerViewRegistroAlbum implements Initializable {
            main.cargarDatosIniciales();
         }else{
             mostrarAlert();
-        }
-        
+        } 
     }
-    
-    private void mostrarAlert() {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setHeaderText(null);
-        alert.setTitle("Campos vacios");
-        alert.setContentText("Algun valor requerido esta en blanco");
-        alert.showAndWait();
-    }
-    
-    
+  
 }
