@@ -19,6 +19,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import model.Album;
 import model.Database;
@@ -48,28 +49,6 @@ public class ControllerViewRegistroAlbum implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
     }
-
-    @FXML
-    private void registrarAlbum(ActionEvent event) throws IOException, FileNotFoundException, ParseException {
-        String nombreAlbum = txtnombre.getText();
-        String descripcionALbum = txtadescripcion.getText();
-        //Database databaseAlbum = Database.getInstance();
-        //controllerMain main = controllerMain.getInstance();
-        if(!nombreAlbum.equals("")||!descripcionALbum.equals("")){
-           this.album = new Album(nombreAlbum,descripcionALbum);
-           //String nombre = databaseAlbum.getUsuario().getNombre();
-           //databaseAlbum.ingresarAlbum(nombre,newAlbum);
-           txtnombre.setText("");
-           txtadescripcion.setText("");
-           Node source = (Node) event.getSource();
-            Stage stage = (Stage) source.getScene().getWindow();
-            stage.close();
-           //main.cargarDatosIniciales();
-        }else{
-            mostrarAlert();
-        }
-        
-    }
     
     private void mostrarAlert() {
         Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -78,10 +57,25 @@ public class ControllerViewRegistroAlbum implements Initializable {
         alert.setContentText("Algun valor requerido esta en blanco");
         alert.showAndWait();
     }
+
+    @FXML
+    private void registrarAlbum(MouseEvent event) throws IOException, FileNotFoundException, ParseException {
+        String nombreAlbum = txtnombre.getText();
+        String descripcionALbum = txtadescripcion.getText();
+        if(!nombreAlbum.equals("")||!descripcionALbum.equals("")){
+           this.album = new Album(nombreAlbum,descripcionALbum);
+           txtnombre.setText("");
+           txtadescripcion.setText("");
+           Node source = (Node) event.getSource();
+            Stage stage = (Stage) source.getScene().getWindow();
+            stage.close();
+        }else{
+            mostrarAlert();
+        } 
+    }
     
     public Album getAlbum(){
         return album;
     }
-    
     
 }

@@ -41,6 +41,8 @@ public class ViewLoginController implements Initializable {
     private Button btnlogin;
     @FXML
     private TextField txtloginusuario;
+    
+    public Usuario userC;
 
     /**
      * Initializes the controller class.
@@ -104,9 +106,11 @@ public class ViewLoginController implements Initializable {
         String nombre = this.txtloginusuario.getText();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/viewMain.fxml"));
+            controllerMain cm=new controllerMain();
             Database database = Database.getInstance();
             Usuario user = new Usuario(nombre);
             database.setUsuario(user);
+            cm.usuario=user;
             Parent root1 = loader.load();
             controllerMain ven = loader.getController();
             Scene scene1 = new Scene(root1);

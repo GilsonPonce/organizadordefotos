@@ -4,6 +4,8 @@
  */
 package controller;
 
+import static java.awt.SystemColor.window;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -19,8 +21,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javax.swing.JFileChooser;
 
 /**
  * FXML Controller class
@@ -43,6 +49,8 @@ public class ControllerViewRegistroFoto implements Initializable {
     private Button btnBuscarFoto;
     @FXML
     private TextField txtFoto;
+    @FXML
+    private AnchorPane PanelRegistroFoto;
 
     /**
      * Initializes the controller class.
@@ -52,13 +60,19 @@ public class ControllerViewRegistroFoto implements Initializable {
         // TODO
     }    
 
+
+
     @FXML
-    private void registrarFoto(ActionEvent event) {
-        
+    private void registrarFoto(MouseEvent event) {
     }
 
     @FXML
-    private void buscarFoto(ActionEvent event) {
+    private void buscarFoto(MouseEvent event) {
+       JFileChooser fc=new JFileChooser();
+       fc.setCurrentDirectory(new File("tmp"));
+       fc.setDialogTitle("Seleccione Imagen a guardar");
+       fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+       fc.setVisible(true);
     }
     
 }

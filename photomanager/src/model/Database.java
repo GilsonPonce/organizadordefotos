@@ -42,7 +42,7 @@ public final class Database{
   /**
    * Metodo que crea el archivo de base de datos en blanco
    */
-  public void escribirArchivo(String nombre,JSONObject obj){
+  public static void escribirArchivo(String nombre,JSONObject obj){
       try{
            FileWriter file = new FileWriter(nombre+".json");
            file.write(obj.toJSONString());
@@ -54,7 +54,7 @@ public final class Database{
   }
   
   
-  public void crearDatabase(String nombre){
+  public static void crearDatabase(String nombre){
        JSONObject obj = new JSONObject();
        JSONArray listAlbumes = new JSONArray();
        JSONArray listFotos = new JSONArray();
@@ -100,7 +100,7 @@ public final class Database{
        escribirArchivo(nombre,obj);
   }
   
-  public void crearDirectorio(){
+  public static void crearDirectorio(){
       File directorio = new File("tmp");
         if (!directorio.exists()) {
             if (directorio.mkdirs()) {
@@ -111,12 +111,12 @@ public final class Database{
         }
   }
   
-  public Boolean existeArchivo(String nombre){
+  public static Boolean existeArchivo(String nombre){
        File archivo1 = new File(nombre+".json");
        return archivo1.exists();
   }
   
-  public Galeria getGaleria(String nombre) throws FileNotFoundException, IOException, ParseException{
+  public static Galeria getGaleria(String nombre) throws FileNotFoundException, IOException, ParseException{
        ArrayList<Foto> listFoto = new ArrayList();
        ArrayList<Persona> listPersona = new ArrayList();
        ArrayList<Album> listAlbum = new ArrayList();
@@ -180,7 +180,7 @@ public final class Database{
   
  
   
- public boolean existeUsuario(String nombre) throws IOException, ParseException{
+ public static boolean existeUsuario(String nombre) throws IOException, ParseException{
      return existeArchivo(nombre);
  }
 

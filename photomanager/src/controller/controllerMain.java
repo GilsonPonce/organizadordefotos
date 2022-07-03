@@ -18,12 +18,16 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
@@ -32,6 +36,7 @@ import model.Album;
 import model.Database;
 import model.Foto;
 import model.Galeria;
+import model.Persona;
 import model.Usuario;
 import org.json.simple.parser.ParseException;
 
@@ -58,12 +63,11 @@ public final class controllerMain implements Initializable {
     private Button btnAgregarAlbum;
     @FXML
     private Button btnAgregarFoto;
-   
-    private static final controllerMain INSTANCEMAIN = new controllerMain();
     
-    public static controllerMain getInstance(){
-      return INSTANCEMAIN;
-    }
+    public Usuario usuario;
+    
+    @FXML
+    private Pane PanelparaFotos;
 
     /**
      * Initializes the controller class.
@@ -71,28 +75,58 @@ public final class controllerMain implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
+            TVRoot.getChildrenUnmodifiable().clear();
             cargarDatosIniciales();
-        } catch (IOException ex) {
-            Logger.getLogger(controllerMain.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ParseException ex) {
+        } catch (IOException | ParseException ex) {
             Logger.getLogger(controllerMain.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
    
 
     @FXML
-    private void BuscarInTF(MouseEvent event) {
-        /*
-        String Lugar=TFLugar.getText();
-        String Persona=TFPersona.getText();
-        if(!(CBPorPersona.isSelected() && CBPorLugar.isSelected())){
-            TVRoot.setRoot(ti);//TRAER METODO QUE CARGE EL ARRAYLIST DE TODAS LAS FOTOS
-            TreeTableColumn<Foto,String>columna=new TreeTableColumn<>("Folder");
-            columna.setPrefWidth(150);
-            columna.setCellValueFactory((TreeTableColumn.CellDataFeatures<Foto,String>parametro)->
-                    new ReadOnlyStringWrapper()parametro.getValue().getAtributodelaFoto())//implementar metodo
-            );
-        }*/
+    private void BuscarInTF(MouseEvent event) throws IOException, FileNotFoundException, ParseException {
+        try{
+            String Lugar=TFLugar.getText();
+            String Persona=TFPersona.getText();
+            Galeria temporal=Database.getGaleria(this.usuario.getNombre());
+            if(CBPorLugar.isSelected()){
+               ArrayList<Foto>tmp=temporal.getFotos();
+               ArrayList<Foto>fotosCond=new ArrayList<>();
+               for(Foto foto: tmp){
+                   if(TFLugar.getText()!=null){
+                       if(Lugar.equals(foto.getLugar())){
+                           fotosCond.add(foto);
+                       }
+                   }
+               }
+               for(Foto f:fotosCond){
+                    Image image= new Image(f.getId()+".json");//f.getId()+".json" HASTA SABER LA UBICACION DE DONDE SE GUARDARAN LAS FOTOS
+                    ImageView iv= new ImageView(image);
+                    PanelparaFotos.getChildren().add(iv);
+               }
+            }
+
+            if(CBPorPersona.isSelected()){
+               ArrayList<Persona>tmp=temporal.getPersonas();
+               ArrayList<Persona>fotosCond=new ArrayList<>();
+               for(Persona persona: tmp){
+                   if(TFPersona.getText()!=null){
+                       if(Persona.equals(persona.getNombre())){
+                           fotosCond.add(persona);
+                       }
+                   }
+               }
+               for(Persona p:fotosCond){
+                    Image image= new Image(p.getIdFoto()+".json");//f.getId()+".json" HASTA SABER LA UBICACION DE DONDE SE GUARDARAN LAS FOTOS
+                    ImageView iv= new ImageView(image);
+                    PanelparaFotos.getChildren().add(iv);
+               }
+            }
+        }  
+        catch(NullPointerException e){
+            Alert a=new Alert(Alert.AlertType.WARNING,"CAMPOS VACIOS");
+            a.show(); 
+        }
     }
     
     /**
@@ -107,7 +141,7 @@ public final class controllerMain implements Initializable {
         if(fotos.size() == 0)return;
         for(int j=0;j<fotos.size();j++){//llenar fotos sin album
             Foto fotoSelect = fotos.get(j);
-            if(fotoSelect.getAlbum()== "" || fotoSelect.getAlbum()== null){
+            if("".equals(fotoSelect.getAlbum()) || fotoSelect.getAlbum()== null){
                 rootItem.getChildren().add(new TreeItem(fotoSelect.getDescripcion()));
             }
         }
@@ -138,8 +172,7 @@ public final class controllerMain implements Initializable {
     }
 
     @FXML
-    private void agregarAlbum(ActionEvent event) {
-        Database databaseAlbum = Database.getInstance();
+    private void AgregarAlbum(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/viewRegistroAlbum.fxml"));
             Parent root1 = loader.load();
@@ -151,7 +184,7 @@ public final class controllerMain implements Initializable {
             stage1.setResizable(false);
             stage1.setScene(scene1);
             stage1.showAndWait();
-            
+            Database databaseAlbum = Database.getInstance();
             Album alb = controllerAlbum.getAlbum();
             if(alb!=null){
                String nombre = databaseAlbum.getUsuario().getNombre();
@@ -169,8 +202,7 @@ public final class controllerMain implements Initializable {
     }
 
     @FXML
-    private void agregarFoto(ActionEvent event) {
-        
+    private void AgregarFoto(MouseEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/viewRegistroFoto.fxml"));
             Parent root = loader.load();
