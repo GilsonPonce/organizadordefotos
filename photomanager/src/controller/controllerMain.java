@@ -138,11 +138,9 @@ public final class controllerMain implements Initializable {
         ArrayList<Foto> fotos =  (ArrayList<Foto>) galeria.getFotos();
         TreeItem rootItem = new TreeItem("Galeria");
         TVRoot.setShowRoot(false);
-        if(albumes.size() == 0)return;
-        if(fotos.size() == 0)return;
         for(int j=0;j<fotos.size();j++){//llenar fotos sin album
             Foto fotoSelect = fotos.get(j);
-            if("".equals(fotoSelect.getAlbum()) || fotoSelect.getAlbum()== null){
+            if("".equals(fotoSelect.getAlbum()) || fotoSelect.getAlbum()== null || "Ninguno".equals(fotoSelect.getAlbum())){
                 rootItem.getChildren().add(new TreeItem(fotoSelect.getDescripcion()));
             }
         }
@@ -188,9 +186,8 @@ public final class controllerMain implements Initializable {
             Database databaseAlbum = Database.getInstance();
             Album alb = controllerAlbum.getAlbum();
             if(alb!=null){
-               String nombre = databaseAlbum.getUsuario().getNombre();
                 try { 
-                    databaseAlbum.ingresarAlbum(nombre,alb);
+                    databaseAlbum.ingresarAlbum(alb);
                     cargarDatosIniciales();
                 } catch (FileNotFoundException | ParseException ex) {
                     Logger.getLogger(controllerMain.class.getName()).log(Level.SEVERE, null, ex);
@@ -215,6 +212,18 @@ public final class controllerMain implements Initializable {
             stage.setResizable(false);
             stage.setScene(scene);
             stage.showAndWait();
+            Database database = Database.getInstance();
+            Foto foto = controllerFoto.getFoto();
+            if(foto != null){
+                try {
+                    database.ingresarFoto(foto);
+                    cargarDatosIniciales();
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(controllerMain.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ParseException ex) {
+                    Logger.getLogger(controllerMain.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         } catch (IOException ex) {
             Logger.getLogger(ControllerViewRegistroFoto.class.getName()).log(Level.SEVERE, null, ex);
         }

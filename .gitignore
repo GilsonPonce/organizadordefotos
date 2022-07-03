@@ -1,7 +1,8 @@
 /photomanager/build/
 /photomanager/dist/
 /photomanager/nbproject/private/
-
+/photomanager/tmp
+/photomanager/database
 ##############################
 ## Java
 ##############################
@@ -11,6 +12,7 @@
 *.war
 *.ear
 *.nar
+*.json
 hs_err_pid*
 
 ##############################

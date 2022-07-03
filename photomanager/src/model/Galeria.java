@@ -46,6 +46,10 @@ public class Galeria {
      public ArrayList getPersonas(){
          return personas;
      }
+
+    Object getFoto() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
      
  
      
