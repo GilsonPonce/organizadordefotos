@@ -67,12 +67,24 @@ public class ControllerViewRegistroFoto implements Initializable {
     }
 
     @FXML
-    private void buscarFoto(MouseEvent event) {
-       JFileChooser fc=new JFileChooser();
-       fc.setCurrentDirectory(new File("tmp"));
-       fc.setDialogTitle("Seleccione Imagen a guardar");
-       fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-       fc.setVisible(true);
+    private void registrarFoto(ActionEvent event) {
+    }
+
+    @FXML
+    private void buscarFoto(ActionEvent event) {
+       Stage stage = new Stage();
+       FileChooser fc = new FileChooser();
+       fc.setTitle("Seleccione Imagen a guardar");
+       fc.setInitialDirectory(
+            new File(System.getProperty("user.home"))
+        ); 
+       fc.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("All Images", "*.*"),
+                new FileChooser.ExtensionFilter("JPG", "*.jpg"),
+                new FileChooser.ExtensionFilter("PNG", "*.png")
+            );
+       File file = fc.showOpenDialog(stage);
+       txtFoto.setText(file.getPath());
     }
     
 }

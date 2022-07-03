@@ -15,25 +15,10 @@
 
 <AnchorPane id="AnchorPane" prefHeight="676.0" prefWidth="979.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.controllerMain">
    <children>
-      <Pane id="pnlPhoto" fx:id="PanelparaFotos" layoutX="415.0" layoutY="26.0" prefHeight="366.0" prefWidth="603.0">
+      <Pane id="pnlPhoto" fx:id="PanelparaFotos" layoutX="361.0" layoutY="14.0" prefHeight="366.0" prefWidth="603.0">
          <children>
             <Button id="btnregresar" layoutX="22.0" layoutY="326.0" mnemonicParsing="false" text="&lt;" />
             <Button id="btnseguir" layoutX="59.0" layoutY="326.0" mnemonicParsing="false" text="&gt;" />
-            <Pane id="pnlProperties" layoutY="376.0" prefHeight="275.0" prefWidth="603.0" style="-fx-background-color: #dedede;">
-               <children>
-                  <Button id="btneliminarfoto" layoutX="22.0" layoutY="21.0" mnemonicParsing="false" text="Eliminar Foto" />
-                  <Button id="btnmodificarinformacion" layoutX="115.0" layoutY="21.0" mnemonicParsing="false" text="Guardar cambios" />
-                  <Label layoutX="22.0" layoutY="74.0" text="Descripcion" />
-                  <Label layoutX="22.0" layoutY="103.0" text="Lugar y fecha" />
-                  <Label layoutX="22.0" layoutY="166.0" text="Personas que aparecen" />
-                  <Label layoutX="23.0" layoutY="131.0" text="Album" />
-                  <TextField id="txtdescripcionfoto" layoutX="129.0" layoutY="69.0" prefHeight="3.0" prefWidth="358.0" />
-                  <TextField id="txtlugarfechafoto" layoutX="130.0" layoutY="98.0" prefHeight="25.0" prefWidth="217.0" />
-                  <DatePicker layoutX="353.0" layoutY="98.0" prefHeight="25.0" prefWidth="208.0" />
-                  <ComboBox id="cmbalbum" layoutX="130.0" layoutY="127.0" prefHeight="17.0" prefWidth="257.0" />
-                  <ListView id="lvpersonas" layoutX="22.0" layoutY="189.0" prefHeight="63.0" prefWidth="539.0" />
-               </children>
-            </Pane>
          </children></Pane>
       <Pane id="pnlSearch" layoutX="13.0" layoutY="14.0" prefHeight="168.0" prefWidth="340.0" style="-fx-background-color: #7AB4FD;">
          <children>
@@ -59,6 +44,21 @@
             <Separator layoutY="60.0" prefHeight="3.0" prefWidth="340.0" />
             <Separator prefHeight="3.0" prefWidth="340.0" />
             <TreeView id="treeviewfile" fx:id="TVRoot" layoutX="12.0" layoutY="70.0" prefHeight="376.0" prefWidth="316.0" />
+         </children>
+      </Pane>
+      <Pane id="pnlProperties" layoutX="361.0" layoutY="392.0" prefHeight="275.0" prefWidth="603.0" style="-fx-background-color: #dedede;">
+         <children>
+            <Button id="btneliminarfoto" layoutX="22.0" layoutY="21.0" mnemonicParsing="false" text="Eliminar Foto" />
+            <Button id="btnmodificarinformacion" layoutX="115.0" layoutY="21.0" mnemonicParsing="false" text="Guardar cambios" />
+            <Label layoutX="22.0" layoutY="74.0" text="Descripcion" />
+            <Label layoutX="22.0" layoutY="103.0" text="Lugar y fecha" />
+            <Label layoutX="22.0" layoutY="166.0" text="Personas que aparecen" />
+            <Label layoutX="23.0" layoutY="131.0" text="Album" />
+            <TextField id="txtdescripcionfoto" layoutX="129.0" layoutY="69.0" prefHeight="3.0" prefWidth="358.0" />
+            <TextField id="txtlugarfechafoto" layoutX="130.0" layoutY="98.0" prefHeight="25.0" prefWidth="217.0" />
+            <DatePicker layoutX="353.0" layoutY="98.0" prefHeight="25.0" prefWidth="208.0" />
+            <ComboBox id="cmbalbum" layoutX="130.0" layoutY="127.0" prefHeight="17.0" prefWidth="257.0" />
+            <ListView id="lvpersonas" layoutX="22.0" layoutY="189.0" prefHeight="63.0" prefWidth="539.0" />
          </children>
       </Pane>
    </children>

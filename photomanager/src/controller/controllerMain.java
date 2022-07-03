@@ -137,6 +137,7 @@ public final class controllerMain implements Initializable {
         ArrayList<Album> albumes = (ArrayList<Album>) galeria.getAlbumes();
         ArrayList<Foto> fotos =  (ArrayList<Foto>) galeria.getFotos();
         TreeItem rootItem = new TreeItem("Galeria");
+        TVRoot.setShowRoot(false);
         if(albumes.size() == 0)return;
         if(fotos.size() == 0)return;
         for(int j=0;j<fotos.size();j++){//llenar fotos sin album
