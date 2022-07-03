@@ -1,10 +1,11 @@
-/*
+ /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
  */
 package controller;
 
 import ec.edu.espol.util.*;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -138,11 +139,11 @@ public final class controllerMain implements Initializable {
 
     @FXML
     private void agregarAlbum(ActionEvent event) {
-        
+        Database databaseAlbum = Database.getInstance();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/viewRegistroAlbum.fxml"));
             Parent root1 = loader.load();
-            ControllerViewRegistroAlbum ven = loader.getController();
+            ControllerViewRegistroAlbum controllerAlbum = loader.getController();
             Scene scene1 = new Scene(root1);
             Stage stage1 = new Stage();
             stage1.initModality(Modality.APPLICATION_MODAL);
@@ -150,6 +151,17 @@ public final class controllerMain implements Initializable {
             stage1.setResizable(false);
             stage1.setScene(scene1);
             stage1.showAndWait();
+            
+            Album alb = controllerAlbum.getAlbum();
+            if(alb!=null){
+               String nombre = databaseAlbum.getUsuario().getNombre();
+                try { 
+                    databaseAlbum.ingresarAlbum(nombre,alb);
+                    cargarDatosIniciales();
+                } catch (FileNotFoundException | ParseException ex) {
+                    Logger.getLogger(controllerMain.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         } catch (IOException ex) {
             Logger.getLogger(ControllerViewRegistroAlbum.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -162,7 +174,7 @@ public final class controllerMain implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/viewRegistroFoto.fxml"));
             Parent root = loader.load();
-            ControllerViewRegistroFoto ven = loader.getController();
+            ControllerViewRegistroFoto controllerFoto = loader.getController();
             Scene scene = new Scene(root);
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);

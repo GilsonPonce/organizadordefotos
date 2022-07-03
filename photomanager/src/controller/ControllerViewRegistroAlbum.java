@@ -38,6 +38,8 @@ public class ControllerViewRegistroAlbum implements Initializable {
     private TextArea txtadescripcion;
     @FXML
     private TextField txtnombre;
+    
+    private Album album;
 
     /**
      * Initializes the controller class.
@@ -51,18 +53,18 @@ public class ControllerViewRegistroAlbum implements Initializable {
     private void registrarAlbum(ActionEvent event) throws IOException, FileNotFoundException, ParseException {
         String nombreAlbum = txtnombre.getText();
         String descripcionALbum = txtadescripcion.getText();
-        Database databaseAlbum = Database.getInstance();
-        controllerMain main = controllerMain.getInstance();
+        //Database databaseAlbum = Database.getInstance();
+        //controllerMain main = controllerMain.getInstance();
         if(!nombreAlbum.equals("")||!descripcionALbum.equals("")){
-           Album newAlbum = new Album(nombreAlbum,descripcionALbum);
-           String nombre = databaseAlbum.getUsuario().getNombre();
-           databaseAlbum.ingresarAlbum(nombre,newAlbum);
+           this.album = new Album(nombreAlbum,descripcionALbum);
+           //String nombre = databaseAlbum.getUsuario().getNombre();
+           //databaseAlbum.ingresarAlbum(nombre,newAlbum);
            txtnombre.setText("");
            txtadescripcion.setText("");
            Node source = (Node) event.getSource();
             Stage stage = (Stage) source.getScene().getWindow();
             stage.close();
-           main.cargarDatosIniciales();
+           //main.cargarDatosIniciales();
         }else{
             mostrarAlert();
         }
@@ -75,6 +77,10 @@ public class ControllerViewRegistroAlbum implements Initializable {
         alert.setTitle("Campos vacios");
         alert.setContentText("Algun valor requerido esta en blanco");
         alert.showAndWait();
+    }
+    
+    public Album getAlbum(){
+        return album;
     }
     
     
