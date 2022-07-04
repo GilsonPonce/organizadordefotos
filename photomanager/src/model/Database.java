@@ -117,18 +117,18 @@ public final class Database{
        return archivo1.exists();
   }
   
-  public static Galeria getGaleria(String nombre) throws FileNotFoundException, IOException, ParseException{
+  public Galeria getGaleria() throws FileNotFoundException, IOException, ParseException{
        ArrayList<Foto> listFoto = new ArrayList();
        ArrayList<Persona> listPersona = new ArrayList();
        ArrayList<Album> listAlbum = new ArrayList();
-      if(!existeUsuario(nombre)){
-          crearDirectorio(nombre);
-          crearDatabase(nombre);
+      if(!existeUsuario(this.usuario.getNombre())){
+          crearDirectorio(this.usuario.getNombre());
+          crearDatabase(this.usuario.getNombre());
           return new Galeria(listAlbum,listFoto,listPersona);
       }
       try { 
           //parseo el archivo json
-          Object ob = new JSONParser().parse(new FileReader("database\\"+nombre+".json"));
+          Object ob = new JSONParser().parse(new FileReader("database\\"+this.usuario.getNombre()+".json"));
           JSONObject js = (JSONObject) ob;
           
           //obtengo la info de la lista de los usuarios y galerias
@@ -177,16 +177,14 @@ public final class Database{
           Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
       }
       return new Galeria(listAlbum,listFoto,listPersona);     
- }
-  
- 
+    }
   
     public static boolean existeUsuario(String nombre) throws IOException, ParseException{
         return existeArchivo(nombre);
     }
 
     public boolean existeAlbum(String nombreAlbum) throws IOException, FileNotFoundException, ParseException{
-        Galeria galeria = getGaleria(this.usuario.getNombre());
+        Galeria galeria = getGaleria();
         ArrayList<Album> albumes = galeria.getAlbumes();
         for(int i = 0; i<albumes.size();i++){
            String nombre = albumes.get(i).getNombre();
@@ -198,7 +196,7 @@ public final class Database{
     }
 
     public String generarIdFoto()throws IOException, FileNotFoundException, ParseException{
-        Galeria galeria = getGaleria(this.usuario.getNombre());
+        Galeria galeria = getGaleria();
         ArrayList<Foto> fotos = galeria.getFotos();
         int tamanoList = fotos.size();
         tamanoList++;
@@ -219,7 +217,7 @@ public final class Database{
 
    public boolean ingresarAlbum(Album album) throws IOException, FileNotFoundException, ParseException{
          try {
-             Galeria galeria = getGaleria(this.usuario.getNombre());
+             Galeria galeria = getGaleria();
              boolean ingresado = galeria.getAlbumes().add(album);
              if(ingresado){
                  recrearDatabase(this.usuario.getNombre(),galeria);
@@ -232,7 +230,7 @@ public final class Database{
    } 
 
    public boolean ingresarFoto(Foto foto) throws IOException, FileNotFoundException, ParseException{
-       Galeria galeria = getGaleria(this.usuario.getNombre());
+       Galeria galeria = getGaleria();
        boolean ingresado = galeria.getFotos().add(foto);
        if(ingresado){
             recrearDatabase(this.usuario.getNombre(),galeria);

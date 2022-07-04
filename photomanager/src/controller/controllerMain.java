@@ -23,6 +23,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeView;
@@ -39,6 +40,10 @@ import model.Galeria;
 import model.Persona;
 import model.Usuario;
 import org.json.simple.parser.ParseException;
+import de.jensd.fx.glyphs.octicons.OctIcon;
+import de.jensd.fx.glyphs.octicons.OctIconView;
+import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.Label;
 
 /**
  * FXML Controller class
@@ -58,7 +63,7 @@ public final class controllerMain implements Initializable {
     @FXML
     private CheckBox CBPorPersona;
     @FXML
-    private TreeView<Foto> TVRoot;
+    private TreeView<String> TVRoot;
     @FXML
     private Button btnAgregarAlbum;
     @FXML
@@ -85,10 +90,12 @@ public final class controllerMain implements Initializable {
 
     @FXML
     private void BuscarInTF(MouseEvent event) throws IOException, FileNotFoundException, ParseException {
+        Database database = Database.getInstance();
         try{
-            String Lugar=TFLugar.getText();
-            String Persona=TFPersona.getText();
-            Galeria temporal=Database.getGaleria(this.usuario.getNombre());
+            String Lugar = TFLugar.getText();
+            String Persona = TFPersona.getText();
+            Galeria temporal = database.getGaleria();
+            
             if(CBPorLugar.isSelected()){
                ArrayList<Foto>tmp=temporal.getFotos();
                ArrayList<Foto>fotosCond=new ArrayList<>();
@@ -133,6 +140,7 @@ public final class controllerMain implements Initializable {
      * Metodo para cargar la galeria del usuario al iniciar la aplicacion
      */
     private void cargarGaleria(Galeria galeria) throws IOException, ParseException{
+        
         Database database = Database.getInstance();
         ArrayList<Album> albumes = (ArrayList<Album>) galeria.getAlbumes();
         ArrayList<Foto> fotos =  (ArrayList<Foto>) galeria.getFotos();
@@ -161,12 +169,39 @@ public final class controllerMain implements Initializable {
             }
         }
         this.TVRoot.setRoot(rootItem);
+        this.TVRoot.setCellFactory((TreeView<String> tv) ->{
+            return new TreeCell<String>(){
+                @Override
+                protected void updateItem(String item, boolean empty){
+                    super.updateItem(item, empty);
+                    if(empty){
+                        this.setGraphic(null);
+                        this.setText(null);
+                    }else{
+                        try {
+                            ImageView imageViewAlbum = new ImageView(new Image("album.png",16,16,false,false));
+                            ImageView imageViewPhoto = new ImageView(new Image("photo.png",16,16,false,false));
+                            if(database.existeAlbum(item)){
+                                this.setGraphic(imageViewAlbum);
+                            }else{
+                                this.setGraphic(imageViewPhoto);
+                            }
+                            
+                            this.setText(item.toString());
+                        } catch (IOException ex) {
+                            Logger.getLogger(controllerMain.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (ParseException ex) {
+                            Logger.getLogger(controllerMain.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+            };
+        });
     }
     
     public void cargarDatosIniciales() throws IOException, ParseException{
         Database database = Database.getInstance();
-        Usuario u = database.getUsuario();
-        Galeria userGaleria = database.getGaleria(u.getNombre());
+        Galeria userGaleria = database.getGaleria();
         cargarGaleria(userGaleria);
     }
 

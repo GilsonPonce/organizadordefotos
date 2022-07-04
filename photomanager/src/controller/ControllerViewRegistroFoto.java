@@ -142,8 +142,7 @@ public class ControllerViewRegistroFoto implements Initializable {
    
     private void llenarComboBoxAlbum() throws IOException, FileNotFoundException, ParseException{
         Database database = Database.getInstance();
-        String nombreUsuario = database.getUsuario().getNombre();
-        ArrayList<Album> albumes = database.getGaleria(nombreUsuario).getAlbumes();
+        ArrayList<Album> albumes = database.getGaleria().getAlbumes();
         cmbAlbum.getItems().add("Ninguno");
         for(int i=0;i<albumes.size();i++){
             cmbAlbum.getItems().add(albumes.get(i).getNombre());
