@@ -42,8 +42,13 @@ import model.Usuario;
 import org.json.simple.parser.ParseException;
 import de.jensd.fx.glyphs.octicons.OctIcon;
 import de.jensd.fx.glyphs.octicons.OctIconView;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import javafx.scene.Node;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
+import javafx.scene.text.Text;
 
 /**
  * FXML Controller class
@@ -149,7 +154,7 @@ public final class controllerMain implements Initializable {
         for(int j=0;j<fotos.size();j++){//llenar fotos sin album
             Foto fotoSelect = fotos.get(j);
             if("".equals(fotoSelect.getAlbum()) || fotoSelect.getAlbum()== null || "Ninguno".equals(fotoSelect.getAlbum())){
-                rootItem.getChildren().add(new TreeItem(fotoSelect.getDescripcion()));
+                rootItem.getChildren().add(new TreeItem(fotoSelect.getId()));
             }
         }
         
@@ -160,7 +165,7 @@ public final class controllerMain implements Initializable {
             if(fotosDelAlbum.size() > 0 ){
                for(int k=0;k < fotosDelAlbum.size();k++){
                    Foto fotoSelect = fotosDelAlbum.get(k);
-                   String nombreFoto = fotoSelect.getDescripcion();
+                   String nombreFoto = fotoSelect.getId();
                    albumItem.getChildren().add(new TreeItem(nombreFoto));
                }
                rootItem.getChildren().add(albumItem);
@@ -262,5 +267,37 @@ public final class controllerMain implements Initializable {
         } catch (IOException ex) {
             Logger.getLogger(ControllerViewRegistroFoto.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    @FXML
+    private void verImagenOAlbum(MouseEvent event) throws IOException, FileNotFoundException, ParseException {
+       Database database = Database.getInstance();
+       Node node = event.getPickResult().getIntersectedNode();
+       if(node instanceof Text || (node instanceof TreeCell && ((TreeCell) node).getText() != null)){
+           String name = (String) ((TreeItem) TVRoot.getSelectionModel().getSelectedItem()).getValue();
+           if(database.existeAlbum(name)){
+               
+           }else{
+              File f = new File("tmp\\"+database.getUsuario().getNombre());
+              String nameFile = "";
+              if(f.exists()){
+                  File[] ficheros = f.listFiles();
+                  for(int i=0;i<ficheros.length;i++){
+                      String[] parts = ficheros[i].getName().split("\\.");
+                      if(parts[0].equals(name)){
+                        nameFile = ficheros[i].getName();
+                        break;
+                      }
+                  }
+              }
+              String urlPath = "tmp\\"+database.getUsuario().getNombre()+"\\"+nameFile;
+              File file = new File(urlPath);
+              InputStream stream = new FileInputStream(file);
+              Image image = new Image(stream);
+              ImageView imagen1 = new ImageView();
+              imagen1.setImage(image);
+              PanelparaFotos.getChildren().add(imagen1);
+           }
+       }
     }
 }

@@ -43,7 +43,7 @@
             <Button id="btnagregarfoto" fx:id="btnAgregarFoto" layoutX="235.0" layoutY="18.0" mnemonicParsing="false" onMouseClicked="#AgregarFoto" text="Agregar Foto" />
             <Separator layoutY="60.0" prefHeight="3.0" prefWidth="340.0" />
             <Separator prefHeight="3.0" prefWidth="340.0" />
-            <TreeView id="treeviewfile" fx:id="TVRoot" layoutX="12.0" layoutY="70.0" prefHeight="376.0" prefWidth="316.0" />
+            <TreeView id="treeviewfile" fx:id="TVRoot" layoutX="12.0" layoutY="70.0" onMouseClicked="#verImagenOAlbum" prefHeight="376.0" prefWidth="316.0" />
          </children>
       </Pane>
       <Pane id="pnlProperties" layoutX="361.0" layoutY="392.0" prefHeight="275.0" prefWidth="603.0" style="-fx-background-color: #dedede;">

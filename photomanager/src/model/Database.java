@@ -238,6 +238,10 @@ public final class Database{
        }
        return false;
    } 
+   
+   public String getIdByDescription(){
+      return ""; 
+   }
  
     
 }
