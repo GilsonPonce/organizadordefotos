@@ -15,10 +15,10 @@
 
 <AnchorPane id="AnchorPane" prefHeight="676.0" prefWidth="979.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.controllerMain">
    <children>
-      <Pane id="pnlPhoto" fx:id="PanelparaFotos" layoutX="361.0" layoutY="14.0" prefHeight="366.0" prefWidth="603.0">
+      <Pane id="pnlPhoto" fx:id="PanelparaFotos" layoutX="361.0" layoutY="14.0" prefHeight="366.0" prefWidth="603.0" style="-fx-alignment: CENTER;">
          <children>
-            <Button id="btnregresar" layoutX="22.0" layoutY="326.0" mnemonicParsing="false" text="&lt;" />
-            <Button id="btnseguir" layoutX="59.0" layoutY="326.0" mnemonicParsing="false" text="&gt;" />
+            <Button id="btnregresar" fx:id="previousFoto" layoutX="22.0" layoutY="326.0" mnemonicParsing="false" onAction="#previousFoto" text="&lt;" />
+            <Button id="btnseguir" fx:id="nextFoto" layoutX="59.0" layoutY="326.0" mnemonicParsing="false" onAction="#nextFoto" text="&gt;" />
          </children></Pane>
       <Pane id="pnlSearch" layoutX="13.0" layoutY="14.0" prefHeight="168.0" prefWidth="340.0" style="-fx-background-color: #7AB4FD;">
          <children>

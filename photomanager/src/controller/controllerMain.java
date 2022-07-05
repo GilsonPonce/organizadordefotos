@@ -76,8 +76,14 @@ public final class controllerMain implements Initializable {
     
     public Usuario usuario;
     
+    private CircularDoubleLinkedList<Foto> fotosDelAlbum;
+    
     @FXML
     private Pane PanelparaFotos;
+    @FXML
+    private Button previousFoto;
+    @FXML
+    private Button nextFoto;
 
     /**
      * Initializes the controller class.
@@ -276,14 +282,29 @@ public final class controllerMain implements Initializable {
        if(node instanceof Text || (node instanceof TreeCell && ((TreeCell) node).getText() != null)){
            String name = (String) ((TreeItem) TVRoot.getSelectionModel().getSelectedItem()).getValue();
            if(database.existeAlbum(name)){
-               
+               CircularDoubleLinkedList<Foto> imagenes = new CircularDoubleLinkedList();
+               ArrayList<Foto> fotos = database.getGaleria().getFotos();
+               ArrayList<Foto> fotosDelAlbumt = database.getFotoByNameAlbum(fotos,name);
+               for(int i=0;i<fotosDelAlbumt.size();i++){
+                   Foto f = fotosDelAlbumt.get(i);
+                   imagenes.add(f);
+               }
+               fotosDelAlbum = imagenes;
+                              
            }else{
-              File f = new File("tmp\\"+database.getUsuario().getNombre());
-              String nameFile = "";
-              if(f.exists()){
-                  File[] ficheros = f.listFiles();
-                  for(int i=0;i<ficheros.length;i++){
-                      String[] parts = ficheros[i].getName().split("\\.");
+              setFotoPanel(name);
+           }
+       }
+    }
+    
+    private void setFotoPanel(String name) throws FileNotFoundException{
+        Database database = Database.getInstance();
+        File f = new File("tmp\\"+database.getUsuario().getNombre());
+        String nameFile = "";
+        if(f.exists()){
+            File[] ficheros = f.listFiles();
+            for(int i=0;i<ficheros.length;i++){
+                String[] parts = ficheros[i].getName().split("\\.");
                       if(parts[0].equals(name)){
                         nameFile = ficheros[i].getName();
                         break;
@@ -297,7 +318,13 @@ public final class controllerMain implements Initializable {
               ImageView imagen1 = new ImageView();
               imagen1.setImage(image);
               PanelparaFotos.getChildren().add(imagen1);
-           }
-       }
+    }
+
+    @FXML
+    private void previousFoto(ActionEvent event) {
+    }
+
+    @FXML
+    private void nextFoto(ActionEvent event) {
     }
 }

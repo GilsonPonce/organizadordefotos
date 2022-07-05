@@ -214,6 +214,18 @@ public final class Database{
         }
         return fotosFromAlbum;
     }
+    
+    public ArrayList<Foto> getFotoByNameAlbum(ArrayList<Foto> fotos, String album){
+        ArrayList<Foto> fotosFromAlbum = new ArrayList();
+        if(fotos.size() == 0) return new ArrayList();
+        if(album == null || album == "") return new ArrayList();
+        for(int i=0;i<fotos.size();i++){
+            if(album.equals(fotos.get(i).getAlbum())){
+                fotosFromAlbum.add(fotos.get(i));
+            }
+        }
+        return fotosFromAlbum;
+    }
 
    public boolean ingresarAlbum(Album album) throws IOException, FileNotFoundException, ParseException{
          try {
