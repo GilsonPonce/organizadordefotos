@@ -46,9 +46,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.text.Text;
+import javafx.util.converter.LocalDateStringConverter;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkEvent.EventType;
 
 /**
  * FXML Controller class
@@ -78,6 +84,16 @@ public final class controllerMain implements Initializable {
     
     @FXML
     private Pane PanelparaFotos;
+    @FXML
+    private TextField TextFieldDescrip;
+    @FXML
+    private TextField TextFieldLugar;
+    @FXML
+    private ComboBox<?> ComboBoxAlbunes;
+    @FXML
+    private ListView<?> ListFieldPersonasQAparecen;
+    @FXML
+    private DatePicker DataPickerFecha;
 
     /**
      * Initializes the controller class.
@@ -271,33 +287,46 @@ public final class controllerMain implements Initializable {
 
     @FXML
     private void verImagenOAlbum(MouseEvent event) throws IOException, FileNotFoundException, ParseException {
-       Database database = Database.getInstance();
-       Node node = event.getPickResult().getIntersectedNode();
-       if(node instanceof Text || (node instanceof TreeCell && ((TreeCell) node).getText() != null)){
-           String name = (String) ((TreeItem) TVRoot.getSelectionModel().getSelectedItem()).getValue();
-           if(database.existeAlbum(name)){
+        Database database = Database.getInstance();
+        Node node = event.getPickResult().getIntersectedNode();
+        if(node instanceof Text || (node instanceof TreeCell && ((TreeCell) node).getText() != null)){
+            String name = (String) ((TreeItem) TVRoot.getSelectionModel().getSelectedItem()).getValue();
+            if(database.existeAlbum(name)){
                
-           }else{
-              File f = new File("tmp\\"+database.getUsuario().getNombre());
-              String nameFile = "";
-              if(f.exists()){
-                  File[] ficheros = f.listFiles();
-                  for(int i=0;i<ficheros.length;i++){
-                      String[] parts = ficheros[i].getName().split("\\.");
-                      if(parts[0].equals(name)){
-                        nameFile = ficheros[i].getName();
-                        break;
+            }else{
+                File f = new File("tmp\\"+database.getUsuario().getNombre());
+                String nameFile = "";
+                if(f.exists()){
+                    File[] ficheros = f.listFiles();
+                    for(int i=0;i<ficheros.length;i++){
+                        String[] parts = ficheros[i].getName().split("\\.");
+                        if(parts[0].equals(name)){
+                            nameFile = ficheros[i].getName();
+                            break;
                       }
                   }
               }
-              String urlPath = "tmp\\"+database.getUsuario().getNombre()+"\\"+nameFile;
-              File file = new File(urlPath);
-              InputStream stream = new FileInputStream(file);
-              Image image = new Image(stream);
-              ImageView imagen1 = new ImageView();
-              imagen1.setImage(image);
-              PanelparaFotos.getChildren().add(imagen1);
+            String urlPath = "tmp\\"+database.getUsuario().getNombre()+"\\"+nameFile;
+            TextFieldDescrip.setText(database.getDescriptionBynomFile(nameFile));
+            TextFieldLugar.setText(database.getLugarBynomFile(nameFile));
+            DataPickerFecha=database.getDateBynomFile(nameFile);
+            File file = new File(urlPath);
+            InputStream stream = new FileInputStream(file);
+            Image image = new Image(stream);
+            ImageView imagen1 = new ImageView();
+            imagen1.setImage(image);
+            imagen1.setFitHeight(300);
+            imagen1.setFitWidth(300);
+            imagen1.setX(150);
+            imagen1.setY(25);
+            PanelparaFotos.getChildren().add(imagen1);
            }
        }
     }
 }
+/*TextFieldDescrip
+TextFieldLugar
+DatePicker DataPickerFecha
+ComboBoxAlbunes
+ListFieldPersonasQAparecen
+*/

@@ -10,9 +10,12 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.control.DatePicker;
+import javafx.util.converter.LocalDateStringConverter;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -242,6 +245,52 @@ public final class Database{
    public String getIdByDescription(){
       return ""; 
    }
- 
-    
+    public String getDescriptionBynomFile(String nomFile){
+      try {
+          nomFile=nomFile.substring(0, nomFile.indexOf("."));
+          Galeria g=this.getGaleria();
+          ArrayList<Foto>fotos=g.getFotos();
+          for(Foto foto: fotos){
+              if(nomFile.equals(foto.getId()))
+                  return foto.getDescripcion();
+          }
+      } catch (IOException ex) {
+          Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+      } catch (ParseException ex) {
+          Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+      }
+      return null;
+   }
+     public String getLugarBynomFile(String nomFile){
+      try {
+          nomFile=nomFile.substring(0, nomFile.indexOf("."));
+          Galeria g=this.getGaleria();
+          ArrayList<Foto>fotos=g.getFotos();
+          for(Foto foto: fotos){
+              if(nomFile.equals(foto.getId()))
+                  return foto.getLugar();
+          }
+      } catch (IOException ex) {
+          Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+      } catch (ParseException ex) {
+          Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+      }
+      return null;
+   }   
+    public DatePicker getDateBynomFile(String nomFile){
+      try {
+          nomFile=nomFile.substring(0, nomFile.indexOf("."));
+          Galeria g=this.getGaleria();
+          ArrayList<Foto>fotos=g.getFotos();
+          for(Foto foto: fotos){
+              if(nomFile.equals(foto.getId()))
+                  return new DatePicker(LocalDate.parse(foto.getFecha()));
+          }
+      } catch (IOException ex) {
+          Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+      } catch (ParseException ex) {
+          Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+      }
+      return null;
+   }   
 }
