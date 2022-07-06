@@ -229,6 +229,17 @@ public final class Database{
         }
         return fotosFromAlbum;
     }
+    
+    public Foto getFotoById(String id) throws IOException, FileNotFoundException, ParseException{
+       Galeria galeria = getGaleria();
+       ArrayList<Foto> allfotos = galeria.getFotos();
+       for(int i=0; i< allfotos.size();i++){
+           if(id.equals(allfotos.get(i).getId())){
+               return allfotos.get(i);
+           }
+       }
+       return new Foto(null,null,null,null,null);
+    }
 
    public boolean ingresarAlbum(Album album) throws IOException, FileNotFoundException, ParseException{
          try {
@@ -249,10 +260,69 @@ public final class Database{
        boolean ingresado = galeria.getFotos().add(foto);
        if(ingresado){
             recrearDatabase(this.usuario.getNombre(),galeria);
-            return ingresado;
        }
-       return false;
+       return ingresado;
    } 
+   
+   public LinkedList<Persona> getPersonaByFoto(Foto foto) throws IOException, FileNotFoundException, ParseException{
+       LinkedList<Persona> personas = new LinkedList();
+       Galeria galeria = getGaleria();
+       ArrayList<Persona> allpersonas = galeria.getPersonas();
+       for(int i=0; i< allpersonas.size();i++){
+           if(foto.getId().equals(allpersonas.get(i).getIdFoto())){
+               personas.add(allpersonas.get(i));
+           }
+       }
+       return personas;
+   }
+   
+   public boolean deleteFoto(String id) throws IOException, FileNotFoundException, ParseException{
+       Galeria galeria = getGaleria();
+       ArrayList<Foto> allfotos = galeria.getFotos();
+       ArrayList<Persona> allpersonas = galeria.getPersonas();
+       boolean eliminado = false;
+       for(int i=0;i<allfotos.size();i++){
+           String idfoto = allfotos.get(i).getId();
+           if(id.equals(idfoto)){
+               eliminado = galeria.getFotos().remove(i);
+           }
+       }
+       for(int j=0;j<allpersonas.size();j++){
+           String idp = allpersonas.get(j).getIdFoto();
+           if(idp.equals(id)){
+              galeria.getPersonas().remove(j);
+           }
+       }
+       if(eliminado){
+           recrearDatabase(this.usuario.getNombre(),galeria);
+       }
+       return eliminado;
+   }
+   
+   public boolean updateFoto(Foto foto) throws IOException, FileNotFoundException, ParseException{
+       Galeria galeria = getGaleria();
+       ArrayList<Foto> allfotos = galeria.getFotos();
+       for(int i=0;i<allfotos.size();i++){
+           Foto actFoto = allfotos.get(i);
+           if(actFoto.getId().equals(foto.getId())){
+              actFoto.setDescripcion(foto.getDescripcion());
+              actFoto.setLugar(foto.getLugar());
+              actFoto.setFecha(foto.getFecha());
+              actFoto.setAlbum(foto.getAlbum());
+           }
+       }
+       recrearDatabase(this.usuario.getNombre(),galeria);
+       return true;
+   }
+   
+   public boolean inserPersona(Persona persona) throws IOException, FileNotFoundException, ParseException{
+      Galeria galeria = getGaleria();
+      boolean inserto = galeria.getPersonas().add(persona);
+      if(inserto){
+          recrearDatabase(this.usuario.getNombre(),galeria);
+      }
+      return inserto;
+   }
    
    public String getIdByDescription(){
       return ""; 

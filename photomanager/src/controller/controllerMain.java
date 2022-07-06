@@ -43,7 +43,11 @@ import org.json.simple.parser.ParseException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.time.LocalDate;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.DatePicker;
@@ -84,6 +88,8 @@ public final class controllerMain implements Initializable {
     
     private int current;
     
+    private Foto fotoEdit;
+    
     @FXML
     private Pane PanelparaFotos;
     @FXML
@@ -97,11 +103,21 @@ public final class controllerMain implements Initializable {
     @FXML
     private TextField TextFieldLugar;
     @FXML
-    private ComboBox<?> ComboBoxAlbunes;
+    private ComboBox<String> ComboBoxAlbunes;
     @FXML
-    private ListView<?> ListFieldPersonasQAparecen;
+    private ListView<String> ListFieldPersonasQAparecen;
     @FXML
     private DatePicker DataPickerFecha;
+    @FXML
+    private Button btnELiminarAlbum;
+    @FXML
+    private Button btnEliminarFoto;
+    @FXML
+    private Button btnGuardarCambios;
+    @FXML
+    private Button btnEditarFoto;
+    @FXML
+    private Button btnAnadirPersonas;
 
 
     /**
@@ -230,6 +246,7 @@ public final class controllerMain implements Initializable {
     }
     
     public void cargarDatosIniciales() throws IOException, ParseException{
+        clean();
         Database database = Database.getInstance();
         Galeria userGaleria = database.getGaleria();
         cargarGaleria(userGaleria);
@@ -300,25 +317,97 @@ public final class controllerMain implements Initializable {
        Node node = event.getPickResult().getIntersectedNode();
        if(node instanceof Text || (node instanceof TreeCell && ((TreeCell) node).getText() != null)){
            String name = (String) ((TreeItem) TVRoot.getSelectionModel().getSelectedItem()).getValue();
+           clean();
            if(database.existeAlbum(name)){
                CircularDoubleLinkedList<Foto> imagenes = new CircularDoubleLinkedList();
                ArrayList<Foto> fotos = database.getGaleria().getFotos();
                ArrayList<Foto> fotosDelAlbumt = database.getFotoByNameAlbum(fotos,name);
-               for(int i=0;i<fotosDelAlbumt.size();i++){
-                   Foto f = fotosDelAlbumt.get(i);
-                   imagenes.add(f);
+               if(fotosDelAlbumt.size() > 0){
+                for(int i=0;i<fotosDelAlbumt.size();i++){
+                  Foto f = fotosDelAlbumt.get(i);
+                  imagenes.add(f);
+                }
+                fotosDelAlbum = imagenes;
+                current=0;
+                previousFoto.setDisable(false);
+                nextFoto.setDisable(false);
+                Foto foto = fotosDelAlbum.get(0);
+                setInfoFoto(foto);
+                setFotoPanel(foto.getId());
                }
-               fotosDelAlbum = imagenes;
-               current=0;
-               previousFoto.setDisable(false);
-              nextFoto.setDisable(false);
-               setFotoPanel(fotosDelAlbum.get(0).getId());           
            }else{
               previousFoto.setDisable(true);
               nextFoto.setDisable(true);
+              Foto foto = database.getFotoById(name);
+              setInfoFoto(foto);
               setFotoPanel(name);
            }
        }
+    }
+    
+    private void setInfoFoto(Foto foto) throws IOException, FileNotFoundException, ParseException{
+        fotoEdit = foto;
+        btnAnadirPersonas.setDisable(false);
+        btnEliminarFoto.setDisable(false);
+        btnEditarFoto.setDisable(false);
+        TextFieldDescrip.setText(foto.getDescripcion());
+        TextFieldLugar.setText(foto.getLugar());
+        LocalDate localDate = LocalDate.parse(foto.getFecha());
+        DataPickerFecha.setValue(localDate);
+        ComboBoxAlbunes.setValue(foto.getAlbum());
+        cargarPersonas(foto);
+    }
+    
+    private void cargarPersonas(Foto foto) throws IOException{
+        try {
+            Database database = Database.getInstance();
+            LinkedList<Persona> personas = database.getPersonaByFoto(foto);
+            ObservableList<String> items = FXCollections.observableArrayList();
+            if(personas.size() > 0){
+                for(int i=0;i<personas.size();i++){
+                    items.add(personas.get(i).getNombre());
+                }
+            }
+            ListFieldPersonasQAparecen.setItems(items);
+        } catch (ParseException ex) {
+            Logger.getLogger(controllerMain.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private void clean() throws ParseException{
+        try {
+            ListFieldPersonasQAparecen.getItems().clear();
+            TextFieldDescrip.setText("");
+            TextFieldDescrip.setDisable(true);
+            TextFieldLugar.setText("");
+            TextFieldLugar.setDisable(true);
+            PanelparaFotos.getChildren().clear();
+            DataPickerFecha.setValue(null);
+            DataPickerFecha.setDisable(true);
+            btnEliminarFoto.setDisable(true);
+            btnEditarFoto.setDisable(true);
+            btnEditarFoto.setVisible(true);
+            btnGuardarCambios.setVisible(false);
+            btnAnadirPersonas.setDisable(true);
+            ComboBoxAlbunes.setDisable(true);
+            nextFoto.setDisable(true);
+            previousFoto.setDisable(true);
+            //TextFieldDescrip.setEditable(true);
+            llenarComboBoxAlbum();
+        } catch (IOException ex) {
+            Logger.getLogger(controllerMain.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private void llenarComboBoxAlbum() throws IOException, FileNotFoundException, ParseException{
+        ComboBoxAlbunes.getItems().clear();
+        Database database = Database.getInstance();
+        ArrayList<Album> albumes = database.getGaleria().getAlbumes();
+        ComboBoxAlbunes.getItems().add("Ninguno");
+        for(int i=0;i<albumes.size();i++){
+            ComboBoxAlbunes.getItems().add(albumes.get(i).getNombre());
+        }
+        ComboBoxAlbunes.setValue("Ninguno");
     }
     
     private void setFotoPanel(String name) throws FileNotFoundException{
@@ -345,21 +434,96 @@ public final class controllerMain implements Initializable {
               imagen1.setX(170.0);
               PanelparaFotos.getChildren().add(imagen1);
     }
+    
 
     @FXML
-    private void previousFoto(ActionEvent event) throws FileNotFoundException {
+    private void previousFoto(ActionEvent event) throws FileNotFoundException, IOException, ParseException {
         int tamanoList = fotosDelAlbum.size();
         current--;
         if(current == -1) current = tamanoList - 1;
         if(current >= 0 && current == tamanoList)current = 0;
         setFotoPanel(fotosDelAlbum.get(current).getId());
+        setInfoFoto(fotosDelAlbum.get(current));
     }
 
     @FXML
-    private void nextFoto(ActionEvent event) throws FileNotFoundException {
+    private void nextFoto(ActionEvent event) throws FileNotFoundException, IOException, ParseException {
         int tamanoList = fotosDelAlbum.size();
         current++;
         if(current >= 0 && current == tamanoList)current = 0;
         setFotoPanel(fotosDelAlbum.get(current).getId());
+        setInfoFoto(fotosDelAlbum.get(current));
+    }
+
+    @FXML
+    private void EliminarAlbum(ActionEvent event) {
+    }
+
+    @FXML
+    private void EliminarFoto(ActionEvent event) throws IOException, FileNotFoundException, ParseException {
+        Database database = Database.getInstance();
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setHeaderText(null);
+        alert.setTitle("Confirmacion");
+        alert.setContentText("¿Deseas realmente eliminar la foto?");
+        alert.showAndWait();
+        if("Aceptar".equals(alert.getResult().getText())){
+           database.deleteFoto(fotoEdit.getId());
+           cargarDatosIniciales();
+        }
+    }
+   
+
+    @FXML
+    private void guardarCambiosFotos(ActionEvent event) throws IOException, FileNotFoundException, ParseException {
+        Database database = Database.getInstance();
+        String descripcion = TextFieldDescrip.getText();
+        String lugar =  TextFieldLugar.getText();
+        String fecha = DataPickerFecha.getValue().toString();
+        String album = ComboBoxAlbunes.getValue();
+        String id = fotoEdit.getId();
+        Foto dataFoto = new Foto(id,descripcion,lugar,fecha,album);
+        database.updateFoto(dataFoto);
+        cargarDatosIniciales();
+    }
+
+    @FXML
+    private void editarFoto(ActionEvent event) {
+        btnGuardarCambios.setVisible(true);
+        btnEditarFoto.setVisible(true);
+        btnEditarFoto.setVisible(false);
+        TextFieldDescrip.setDisable(false);
+        TextFieldLugar.setDisable(false);
+        DataPickerFecha.setDisable(false);
+        ComboBoxAlbunes.setDisable(false);
+    }
+
+    @FXML
+    private void anadirPersonas(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/viewPersona.fxml"));
+            Parent root = loader.load();
+            ControllerViewPersona controllerViewPersona = loader.getController();
+            Scene scene = new Scene(root);
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Agregar Persona");
+            stage.setResizable(false);
+            stage.setScene(scene);
+            stage.showAndWait();
+            Database database = Database.getInstance();
+            String nombrePersona = controllerViewPersona.getNombrePersona();
+            Persona per = new Persona(nombrePersona,fotoEdit.getId());
+            if(nombrePersona != null){
+                try {
+                    database.inserPersona(per);
+                    cargarPersonas(fotoEdit);
+                } catch (FileNotFoundException | ParseException ex) {
+                    Logger.getLogger(controllerMain.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ControllerViewPersona.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

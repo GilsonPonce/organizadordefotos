@@ -30,17 +30,10 @@ public class Persona {
     public void setIdFoto(String idFoto){
         this.idFoto = idFoto;
     }
-    
-    //tiene nombrecompleto
-    /*
-       se debera implementar las funciones de 
-            getters and setter
-            verificarDuplicado - devolvera un boolean para verificar si una persona ya esta!
-            registrarPersona - registrar a la persona
-            eliminarPersona - eliminara a la persona
-            actualizarPersona - actualizara todos los campos de la persona
-            getPersona - devolvera una persona
-            getPersonaByAlbum - devolvera una lista de personas      
-    */
+   
+    @Override
+    public String toString(){
+        return this.nombre;
+    }
     
 }
