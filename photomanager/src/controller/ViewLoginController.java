@@ -58,7 +58,7 @@ public class ViewLoginController implements Initializable {
      */
     @FXML
     private void login(ActionEvent event) throws IOException, ParseException {
-        String nombre = this.txtloginusuario.getText();
+        String nombre = this.txtloginusuario.getText().toLowerCase();
         if(!"".equals(nombre) && nombre != null){
             Node source = (Node) event.getSource();
             Stage stage = (Stage) source.getScene().getWindow();
@@ -75,7 +75,7 @@ public class ViewLoginController implements Initializable {
      */
     @FXML
     private void enter(KeyEvent event) throws IOException, ParseException {
-        String nombre = this.txtloginusuario.getText();
+        String nombre = this.txtloginusuario.getText().toLowerCase();
         if(event.getCode() == KeyCode.ENTER){
             if(!"".equals(nombre) && nombre != null){
                 Node source = (Node) event.getSource();
@@ -103,7 +103,7 @@ public class ViewLoginController implements Initializable {
      * Metedo que abre el main o la ventana principal de la aplicacion
      */
     private void abrirMain(){
-        String nombre = this.txtloginusuario.getText();
+        String nombre = this.txtloginusuario.getText().toLowerCase();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/viewMain.fxml"));
             controllerMain cm=new controllerMain();

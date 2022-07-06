@@ -40,15 +40,19 @@ import model.Galeria;
 import model.Persona;
 import model.Usuario;
 import org.json.simple.parser.ParseException;
-import de.jensd.fx.glyphs.octicons.OctIcon;
-import de.jensd.fx.glyphs.octicons.OctIconView;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.text.Text;
+import javafx.util.converter.LocalDateStringConverter;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkEvent.EventType;
 
 /**
  * FXML Controller class
@@ -78,12 +82,27 @@ public final class controllerMain implements Initializable {
     
     private CircularDoubleLinkedList<Foto> fotosDelAlbum;
     
+    private int current;
+    
     @FXML
     private Pane PanelparaFotos;
     @FXML
+
     private Button previousFoto;
     @FXML
     private Button nextFoto;
+
+    @FXML
+    private TextField TextFieldDescrip;
+    @FXML
+    private TextField TextFieldLugar;
+    @FXML
+    private ComboBox<?> ComboBoxAlbunes;
+    @FXML
+    private ListView<?> ListFieldPersonasQAparecen;
+    @FXML
+    private DatePicker DataPickerFecha;
+
 
     /**
      * Initializes the controller class.
@@ -290,14 +309,20 @@ public final class controllerMain implements Initializable {
                    imagenes.add(f);
                }
                fotosDelAlbum = imagenes;
-                              
+               current=0;
+               previousFoto.setDisable(false);
+              nextFoto.setDisable(false);
+               setFotoPanel(fotosDelAlbum.get(0).getId());           
            }else{
+              previousFoto.setDisable(true);
+              nextFoto.setDisable(true);
               setFotoPanel(name);
            }
        }
     }
     
     private void setFotoPanel(String name) throws FileNotFoundException{
+        PanelparaFotos.getChildren().clear();
         Database database = Database.getInstance();
         File f = new File("tmp\\"+database.getUsuario().getNombre());
         String nameFile = "";
@@ -314,17 +339,27 @@ public final class controllerMain implements Initializable {
               String urlPath = "tmp\\"+database.getUsuario().getNombre()+"\\"+nameFile;
               File file = new File(urlPath);
               InputStream stream = new FileInputStream(file);
-              Image image = new Image(stream);
+              Image image = new Image(stream,300,300,false,false);
               ImageView imagen1 = new ImageView();
               imagen1.setImage(image);
+              imagen1.setX(170.0);
               PanelparaFotos.getChildren().add(imagen1);
     }
 
     @FXML
-    private void previousFoto(ActionEvent event) {
+    private void previousFoto(ActionEvent event) throws FileNotFoundException {
+        int tamanoList = fotosDelAlbum.size();
+        current--;
+        if(current == -1) current = tamanoList - 1;
+        if(current >= 0 && current == tamanoList)current = 0;
+        setFotoPanel(fotosDelAlbum.get(current).getId());
     }
 
     @FXML
-    private void nextFoto(ActionEvent event) {
+    private void nextFoto(ActionEvent event) throws FileNotFoundException {
+        int tamanoList = fotosDelAlbum.size();
+        current++;
+        if(current >= 0 && current == tamanoList)current = 0;
+        setFotoPanel(fotosDelAlbum.get(current).getId());
     }
 }

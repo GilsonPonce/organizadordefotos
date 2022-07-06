@@ -15,11 +15,7 @@
 
 <AnchorPane id="AnchorPane" prefHeight="676.0" prefWidth="979.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.controllerMain">
    <children>
-      <Pane id="pnlPhoto" fx:id="PanelparaFotos" layoutX="361.0" layoutY="14.0" prefHeight="366.0" prefWidth="603.0" style="-fx-alignment: CENTER;">
-         <children>
-            <Button id="btnregresar" fx:id="previousFoto" layoutX="22.0" layoutY="326.0" mnemonicParsing="false" onAction="#previousFoto" text="&lt;" />
-            <Button id="btnseguir" fx:id="nextFoto" layoutX="59.0" layoutY="326.0" mnemonicParsing="false" onAction="#nextFoto" text="&gt;" />
-         </children></Pane>
+      <Pane id="pnlPhoto" fx:id="PanelparaFotos" layoutX="361.0" layoutY="14.0" prefHeight="338.0" prefWidth="603.0" style="-fx-alignment: CENTER;" />
       <Pane id="pnlSearch" layoutX="13.0" layoutY="14.0" prefHeight="168.0" prefWidth="340.0" style="-fx-background-color: #7AB4FD;">
          <children>
             <Button id="btnsearch" fx:id="BuscarFoto" layoutX="248.0" layoutY="129.0" mnemonicParsing="false" onMouseClicked="#BuscarInTF" prefHeight="25.0" prefWidth="71.0" text="Buscar" />
@@ -54,12 +50,14 @@
             <Label layoutX="22.0" layoutY="103.0" text="Lugar y fecha" />
             <Label layoutX="22.0" layoutY="166.0" text="Personas que aparecen" />
             <Label layoutX="23.0" layoutY="131.0" text="Album" />
-            <TextField id="txtdescripcionfoto" layoutX="129.0" layoutY="69.0" prefHeight="3.0" prefWidth="358.0" />
-            <TextField id="txtlugarfechafoto" layoutX="130.0" layoutY="98.0" prefHeight="25.0" prefWidth="217.0" />
-            <DatePicker layoutX="353.0" layoutY="98.0" prefHeight="25.0" prefWidth="208.0" />
-            <ComboBox id="cmbalbum" layoutX="130.0" layoutY="127.0" prefHeight="17.0" prefWidth="257.0" />
-            <ListView id="lvpersonas" layoutX="22.0" layoutY="189.0" prefHeight="63.0" prefWidth="539.0" />
+            <TextField id="txtdescripcionfoto" fx:id="TextFieldDescrip" layoutX="129.0" layoutY="69.0" prefHeight="3.0" prefWidth="358.0" />
+            <TextField id="txtlugarfechafoto" fx:id="TextFieldLugar" layoutX="130.0" layoutY="98.0" prefHeight="25.0" prefWidth="217.0" />
+            <DatePicker fx:id="DataPickerFecha" layoutX="353.0" layoutY="98.0" prefHeight="25.0" prefWidth="208.0" />
+            <ComboBox id="cmbalbum" fx:id="ComboBoxAlbunes" layoutX="130.0" layoutY="127.0" prefHeight="17.0" prefWidth="257.0" />
+            <ListView id="lvpersonas" fx:id="ListFieldPersonasQAparecen" layoutX="22.0" layoutY="189.0" prefHeight="63.0" prefWidth="539.0" />
          </children>
       </Pane>
+      <Button id="btnseguir" fx:id="nextFoto" disable="true" layoutX="394.0" layoutY="357.0" mnemonicParsing="false" onAction="#nextFoto" text="&gt;" />
+      <Button id="btnregresar" fx:id="previousFoto" disable="true" layoutX="361.0" layoutY="357.0" mnemonicParsing="false" onAction="#previousFoto" text="&lt;" />
    </children>
 </AnchorPane>

@@ -175,9 +175,14 @@ public class CircularDoubleLinkedList<E> implements List<E>,Iterable<E> {
 
     @Override
     public boolean addLast(E e) {
-        if(e==null) return false;
         Node<E> p = new Node(e);
-        if(isEmpty()) last = last.next = p;
+        if(e==null){ 
+            return false;
+        }
+        if(this.isEmpty()){ 
+            last = p;
+            last.next=last;
+        }
         else{
             p.previous = last;
             Node<E> first = last.next;

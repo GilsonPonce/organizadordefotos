@@ -64,21 +64,4 @@ public class Foto {
         this.album = album;
     }
     
-    
-    
-    /*
-       se debera implementar las funciones de 
-            getters and setter
-            generarIdFoto - generar id
-            registrarFoto - registra una foto, si no tiene album por default carpeta raiz
-            eliminarFoto - elimina un foto
-            actualizarFoto - actualiza la foto
-            getFoto - devuelve una foto
-            getAllFoto - devuelve todas la fotos?
-            getFotoByLugar - devuelve una lista de foto por el lugar
-            getFotoByPersona - devuelve una lista de foto por la persona
-            getFotoByAlbum - devuelve la foto por el album
-            
-    */
-    
 }
