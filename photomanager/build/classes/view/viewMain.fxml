@@ -23,7 +23,7 @@
             <Label layoutX="31.0" layoutY="69.0" text="Personas" />
             <TextField id="txtlugar" fx:id="TFLugar" layoutX="111.0" layoutY="20.0" prefHeight="25.0" prefWidth="208.0" />
             <TextField id="txtpersonas" fx:id="TFPersona" layoutX="111.0" layoutY="63.0" prefHeight="17.0" prefWidth="208.0" />
-            <CheckBox fx:id="CBPorLugar" layoutX="34.0" layoutY="133.0" mnemonicParsing="false" text="Por lugar" />
+            <CheckBox fx:id="CBPorLugar" layoutX="34.0" layoutY="133.0" mnemonicParsing="false" selected="true" text="Por lugar" />
             <CheckBox fx:id="CBPorPersona" layoutX="117.0" layoutY="133.0" mnemonicParsing="false" text="Por personas" />
             <Label layoutX="112.0" layoutY="88.0" text="Si hay mas de uno separar por ;" />
          </children>

@@ -140,46 +140,65 @@ public final class controllerMain implements Initializable {
         try{
             String Lugar = TFLugar.getText();
             String Persona = TFPersona.getText();
-            Galeria temporal = database.getGaleria();
+            
+            if(CBPorPersona.isSelected() && CBPorLugar.isSelected()){
+                if((!Persona.isEmpty()) && (!Lugar.isEmpty())){
+                    Galeria gaPerLugar = database.getGaleriaByPersonaOrLugar(Lugar, Persona);
+                    if(gaPerLugar.getFotos().isEmpty()){
+                       mostrarAlert("No hay resultados para mostrar");
+                        return;
+                    }
+                    cargarGaleria(gaPerLugar);
+                }else{
+                    mostrarAlert("El campo de personas y lugar esta vacio");
+                    return;
+                }
+            }
             
             if(CBPorLugar.isSelected()){
-               ArrayList<Foto>tmp=temporal.getFotos();
-               ArrayList<Foto>fotosCond=new ArrayList<>();
-               for(Foto foto: tmp){
-                   if(TFLugar.getText()!=null){
-                       if(Lugar.equals(foto.getLugar())){
-                           fotosCond.add(foto);
-                       }
-                   }
-               }
-               for(Foto f:fotosCond){
-                    Image image= new Image(f.getId()+".json");//f.getId()+".json" HASTA SABER LA UBICACION DE DONDE SE GUARDARAN LAS FOTOS
-                    ImageView iv= new ImageView(image);
-                    PanelparaFotos.getChildren().add(iv);
+               if(!Lugar.isEmpty()){
+                   Galeria gaLugar = database.getGaleriaByLugar(Lugar);
+                   if(gaLugar.getFotos().isEmpty()){
+                      mostrarAlert("No hay resultados para mostrar");
+                      return;
+                  }
+                   cargarGaleria(gaLugar);
+               }else{
+                   mostrarAlert("El campo de lugar esta vacia");
+                   return;
                }
             }
 
             if(CBPorPersona.isSelected()){
-               ArrayList<Persona>tmp=temporal.getPersonas();
-               ArrayList<Persona>fotosCond=new ArrayList<>();
-               for(Persona persona: tmp){
-                   if(TFPersona.getText()!=null){
-                       if(Persona.equals(persona.getNombre())){
-                           fotosCond.add(persona);
-                       }
-                   }
-               }
-               for(Persona p:fotosCond){
-                    Image image= new Image(p.getIdFoto()+".json");//f.getId()+".json" HASTA SABER LA UBICACION DE DONDE SE GUARDARAN LAS FOTOS
-                    ImageView iv= new ImageView(image);
-                    PanelparaFotos.getChildren().add(iv);
-               }
+              if(!Persona.isEmpty()){
+                  Galeria gaPersona = database.getGaleriaByPersona(Persona);
+                  if(gaPersona.getFotos().isEmpty()){
+                      mostrarAlert("No hay resultados para mostrar");
+                      return;
+                  }
+                  cargarGaleria(gaPersona);
+              }else{
+                  mostrarAlert("El campo de persona esta vacia");
+                  return;
+              }
+            }
+           
+            if(CBPorLugar.isSelected() == false && CBPorPersona.isSelected() == false){
+                mostrarAlert("Seleccione una opcion");
             }
         }  
         catch(NullPointerException e){
             Alert a=new Alert(Alert.AlertType.WARNING,"CAMPOS VACIOS");
             a.show(); 
         }
+    }
+    
+    private void mostrarAlert(String mensaje) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setHeaderText(null);
+        alert.setTitle("Galeria");
+        alert.setContentText(mensaje);
+        alert.showAndWait();
     }
     
     /**

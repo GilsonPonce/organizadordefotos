@@ -182,6 +182,106 @@ public final class Database{
       return new Galeria(listAlbum,listFoto,listPersona);     
     }
   
+    public Galeria getGaleriaByLugar(String lugar) throws ParseException, IOException, ParseException{
+        ArrayList<String> idsImagenes = new ArrayList();
+      try {
+          Galeria galeria = getGaleria();
+          ArrayList<Foto> fotos = galeria.getFotos();
+          for(Foto fot: fotos){
+              String lugarfilter = fot.getLugar();
+              if(lugar.equals(lugarfilter)){
+                 idsImagenes.add(fot.getId());
+              }
+          }
+      } catch (ParseException ex) {
+          Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+      }
+      return getGaleriaIdFoto(idsImagenes);
+    }
+    
+    public Galeria getGaleriaByPersona(String persona) throws ParseException, IOException, ParseException{
+        ArrayList<String> idsImagenes = new ArrayList();
+      try {
+          Galeria galeria = getGaleria();
+          ArrayList<Persona> personas = galeria.getPersonas();
+          for(Persona ft: personas){
+             String nombrePer = ft.getNombre();
+             if(nombrePer.equals(persona)){
+                 idsImagenes.add(ft.getIdFoto());
+             }
+          }       
+      } catch (ParseException ex) {
+          Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+      }
+      return getGaleriaIdFoto(idsImagenes);
+    }
+    
+    public Galeria getGaleriaByPersonaOrLugar(String lugar, String persona) throws IOException{
+        ArrayList<String> idsImagenes = new ArrayList();
+        ArrayList<String> idsImagenesLugar = new ArrayList();
+        try {
+          Galeria galeria = getGaleria();
+          ArrayList<Persona> personas = galeria.getPersonas();
+          for(Persona ft: personas){
+             String nombrePer = ft.getNombre();
+             if(nombrePer.equals(persona)){
+                 idsImagenes.add(ft.getIdFoto());
+             }
+          }
+          
+          Galeria galeriaPersonas = getGaleriaIdFoto(idsImagenes);
+          ArrayList<Foto> fotos = galeriaPersonas.getFotos();
+          for(Foto fot: fotos){
+              String lugarfilter = fot.getLugar();
+              if(lugar.equals(lugarfilter)){
+                 idsImagenesLugar.add(fot.getId());
+              }
+          }
+      } catch (ParseException ex) {
+          Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+      }
+      return getGaleriaIdFoto(idsImagenesLugar);
+    }
+    public Galeria getGaleriaIdFoto(ArrayList<String> idsFotos) throws IOException, FileNotFoundException{
+      ArrayList<Album> filterAlbumes = new ArrayList();
+      ArrayList<Foto> filterFotos = new ArrayList();
+      ArrayList<Persona> filterPersonas = new ArrayList();
+      try {
+          Galeria galeria = getGaleria();
+          ArrayList<Album> albumes = galeria.getAlbumes();
+          ArrayList<Foto> fotos = galeria.getFotos();
+          ArrayList<Persona> personas = galeria.getPersonas();
+          for(String id: idsFotos){
+            for(Foto fot: fotos){
+              String idFoto = fot.getId();
+              if(idFoto.equals(id)){
+                 filterFotos.add(fot);
+              }
+              for(Persona per: personas){
+                 String idimagen = per.getIdFoto();
+                 if(idimagen.equals(fot.getId())){
+                    filterPersonas.add(per);
+                 }
+              }
+            }
+          }
+          for(Album alb: albumes){
+              String nombreAlbum = alb.getNombre();
+              for(Foto fo: filterFotos){
+                  String nameAlbum = fo.getAlbum();
+                  if(nombreAlbum.equals(nameAlbum)){
+                     filterAlbumes.add(alb);
+                     break;
+                  }
+              }
+          } 
+      } catch (ParseException ex) {
+          Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+      }
+      Galeria newGa = new Galeria(filterAlbumes,filterFotos,filterPersonas);
+      return newGa;
+    }
+  
     public static boolean existeUsuario(String nombre) throws IOException, ParseException{
         return existeArchivo(nombre);
     }
@@ -229,6 +329,7 @@ public final class Database{
         }
         return fotosFromAlbum;
     }
+
     
     public Foto getFotoById(String id) throws IOException, FileNotFoundException, ParseException{
        Galeria galeria = getGaleria();
@@ -327,6 +428,7 @@ public final class Database{
    public String getIdByDescription(){
       return ""; 
    }
+   
     public String getDescriptionBynomFile(String nomFile){
       try {
           nomFile=nomFile.substring(0, nomFile.indexOf("."));

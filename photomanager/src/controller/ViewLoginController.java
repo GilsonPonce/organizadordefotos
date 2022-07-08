@@ -115,7 +115,7 @@ public class ViewLoginController implements Initializable {
             controllerMain ven = loader.getController();
             Scene scene1 = new Scene(root1);
             Stage stage1 = new Stage();
-            stage1.setTitle("PhegistroAlbumoto Manager");
+            stage1.setTitle("Photo Manager");
             stage1.setResizable(false);
             stage1.setScene(scene1);
             stage1.show();
