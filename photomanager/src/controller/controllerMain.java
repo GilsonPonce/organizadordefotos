@@ -118,6 +118,8 @@ public final class controllerMain implements Initializable {
     private Button btnEditarFoto;
     @FXML
     private Button btnAnadirPersonas;
+    @FXML
+    private Button btncancelar;
 
 
     /**
@@ -406,6 +408,7 @@ public final class controllerMain implements Initializable {
             btnEliminarFoto.setDisable(true);
             btnEditarFoto.setDisable(true);
             btnEditarFoto.setVisible(true);
+            btncancelar.setVisible(false);
             btnGuardarCambios.setVisible(false);
             btnAnadirPersonas.setDisable(true);
             ComboBoxAlbunes.setDisable(true);
@@ -511,6 +514,7 @@ public final class controllerMain implements Initializable {
         btnGuardarCambios.setVisible(true);
         btnEditarFoto.setVisible(true);
         btnEditarFoto.setVisible(false);
+        btncancelar.setVisible(true);
         TextFieldDescrip.setDisable(false);
         TextFieldLugar.setDisable(false);
         DataPickerFecha.setDisable(false);
@@ -544,5 +548,10 @@ public final class controllerMain implements Initializable {
         } catch (IOException ex) {
             Logger.getLogger(ControllerViewPersona.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    @FXML
+    private void Cancelar(ActionEvent event) throws ParseException {
+        clean();
     }
 }

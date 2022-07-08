@@ -58,6 +58,7 @@
             <ListView id="lvpersonas" fx:id="ListFieldPersonasQAparecen" layoutX="22.0" layoutY="196.0" prefHeight="73.0" prefWidth="544.0" />
             <Button fx:id="btnEditarFoto" disable="true" layoutX="131.0" layoutY="21.0" mnemonicParsing="false" onAction="#editarFoto" text="Editar Foto" />
             <Button fx:id="btnAnadirPersonas" disable="true" layoutX="153.0" layoutY="166.0" mnemonicParsing="false" onAction="#anadirPersonas" text="Añadir Personas" />
+            <Button fx:id="btncancelar" layoutX="228.0" layoutY="21.0" mnemonicParsing="false" onAction="#Cancelar" text="Cancelar" visible="false" />
          </children>
       </Pane>
       <Button id="btnseguir" fx:id="nextFoto" disable="true" layoutX="394.0" layoutY="357.0" mnemonicParsing="false" onAction="#nextFoto" text="&gt;" />
