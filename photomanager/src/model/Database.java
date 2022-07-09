@@ -29,6 +29,7 @@ import org.json.simple.parser.ParseException;
 public final class Database{
 
   private Usuario usuario;
+  private Album albumEditar;
   private static final Database INSTANCE = new Database();
   
   public static Database getInstance(){
@@ -41,6 +42,13 @@ public final class Database{
   
   public Usuario getUsuario(){
       return usuario;
+  }
+  
+  public void setAlbumEditar(Album alb){
+      this.albumEditar = alb;
+  }
+  public Album getAlbumEditar(){
+      return albumEditar;
   }
   /**
    * Metodo que crea el archivo de base de datos en blanco
@@ -341,6 +349,24 @@ public final class Database{
        }
        return new Foto(null,null,null,null,null);
     }
+    
+   public Album getAlbum(String name) throws IOException{
+      try {
+          Galeria galeria = getGaleria();
+          ArrayList<Album> fotos = galeria.getAlbumes();
+          for(Album alb: fotos){
+              String nombre = alb.getNombre();
+              if(nombre.equals(name)){
+                  return alb;
+              }
+          }
+      } catch (IOException ex) {
+          Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+      } catch (ParseException ex) {
+          Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+      }
+      return null;
+   }
 
    public boolean ingresarAlbum(Album album) throws IOException, FileNotFoundException, ParseException{
          try {
@@ -354,7 +380,61 @@ public final class Database{
              Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
          }
          return false;
-   } 
+   }
+   
+   public boolean actualizarAlbum(String nameAlbum,Album album)throws IOException, FileNotFoundException, ParseException{
+       boolean actualizado = false;
+       try { 
+             Galeria galeria = getGaleria();
+             ArrayList<Album> albumes = galeria.getAlbumes();
+             ArrayList<Foto> fotos = galeria.getFotos();
+             for(Album alb: albumes){
+                 String name = alb.getNombre();
+                 if(nameAlbum.equals(name)){
+                     if(album.getNombre().isEmpty())album.setNombre(nameAlbum);
+                     if(album.getDescripcion().isEmpty())album.setDescripcion("");
+                     if(!nameAlbum.equals(album.getNombre())){
+                        for(int i=0;i<fotos.size();i++){
+                            String albumFoto = fotos.get(i).getAlbum();
+                            if(name.equals(albumFoto)){
+                                fotos.get(i).setAlbum(album.getNombre());
+                            }
+                        }
+                     }
+                     alb.setDescripcion(album.getDescripcion());
+                     alb.setNombre(album.getNombre());
+                     actualizado = true;
+                 }
+             }
+             recrearDatabase(this.usuario.getNombre(),galeria);
+         } catch (ParseException ex) {
+             Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+         }
+         return actualizado;
+   }
+   
+   public boolean deleteAlbum(String name)throws IOException, FileNotFoundException, ParseException{
+       Galeria galeria = getGaleria();
+       boolean eliminar = false;
+       ArrayList<Album> albumes = galeria.getAlbumes();
+       ArrayList<Foto> fotos = galeria.getFotos();
+       int i =0;
+       for(Album alb: albumes){
+            String nameAlbum = alb.getNombre();
+            if(nameAlbum.equals(name)){
+                for(int n=0;n<fotos.size();n++){
+                    String album = fotos.get(n).getAlbum();
+                    if(name.equals(album)){
+                        galeria.getFotos().remove(n);
+                    }
+                }
+                eliminar = galeria.getAlbumes().remove(i);           
+            }
+            i++;
+        }
+       recrearDatabase(this.usuario.getNombre(),galeria);
+       return eliminar;
+   }
 
    public boolean ingresarFoto(Foto foto) throws IOException, FileNotFoundException, ParseException{
        Galeria galeria = getGaleria();

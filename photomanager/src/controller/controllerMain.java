@@ -89,6 +89,7 @@ public final class controllerMain implements Initializable {
     private int current;
     
     private Foto fotoEdit;
+    private String albumEdit;
     
     @FXML
     private Pane PanelparaFotos;
@@ -109,8 +110,6 @@ public final class controllerMain implements Initializable {
     @FXML
     private DatePicker DataPickerFecha;
     @FXML
-    private Button btnELiminarAlbum;
-    @FXML
     private Button btnEliminarFoto;
     @FXML
     private Button btnGuardarCambios;
@@ -120,6 +119,8 @@ public final class controllerMain implements Initializable {
     private Button btnAnadirPersonas;
     @FXML
     private Button btncancelar;
+    @FXML
+    private Button btnEditarAlbum;
 
 
     /**
@@ -343,6 +344,8 @@ public final class controllerMain implements Initializable {
                CircularDoubleLinkedList<Foto> imagenes = new CircularDoubleLinkedList();
                ArrayList<Foto> fotos = database.getGaleria().getFotos();
                ArrayList<Foto> fotosDelAlbumt = database.getFotoByNameAlbum(fotos,name);
+                btnEditarAlbum.setDisable(false);
+                albumEdit = name;
                if(fotosDelAlbumt.size() > 0){
                 for(int i=0;i<fotosDelAlbumt.size();i++){
                   Foto f = fotosDelAlbumt.get(i);
@@ -357,17 +360,27 @@ public final class controllerMain implements Initializable {
                 setFotoPanel(foto.getId());
                }
            }else{
+              btnEditarAlbum.setDisable(false);
               previousFoto.setDisable(true);
               nextFoto.setDisable(true);
               Foto foto = database.getFotoById(name);
+              albumEdit = foto.getAlbum();
               setInfoFoto(foto);
               setFotoPanel(name);
            }
        }
     }
     
+    /**
+     * Metodo que carga la informacion de la foto en el panel de descripciones
+     * @param foto
+     * @throws IOException
+     * @throws FileNotFoundException
+     * @throws ParseException 
+     */
     private void setInfoFoto(Foto foto) throws IOException, FileNotFoundException, ParseException{
         fotoEdit = foto;
+        albumEdit = foto.getAlbum();
         btnAnadirPersonas.setDisable(false);
         btnEliminarFoto.setDisable(false);
         btnEditarFoto.setDisable(false);
@@ -379,6 +392,15 @@ public final class controllerMain implements Initializable {
         cargarPersonas(foto);
     }
     
+    public String getAlbumEdit(){
+        return this.albumEdit;
+    }
+    
+    /**
+     * Metodo para cargar personas en el listview
+     * @param foto que revive para buscar las personas
+     * @throws IOException 
+     */
     private void cargarPersonas(Foto foto) throws IOException{
         try {
             Database database = Database.getInstance();
@@ -407,6 +429,7 @@ public final class controllerMain implements Initializable {
             DataPickerFecha.setDisable(true);
             btnEliminarFoto.setDisable(true);
             btnEditarFoto.setDisable(true);
+            btnEditarAlbum.setDisable(true);
             btnEditarFoto.setVisible(true);
             btncancelar.setVisible(false);
             btnGuardarCambios.setVisible(false);
@@ -414,7 +437,6 @@ public final class controllerMain implements Initializable {
             ComboBoxAlbunes.setDisable(true);
             nextFoto.setDisable(true);
             previousFoto.setDisable(true);
-            //TextFieldDescrip.setEditable(true);
             llenarComboBoxAlbum();
         } catch (IOException ex) {
             Logger.getLogger(controllerMain.class.getName()).log(Level.SEVERE, null, ex);
@@ -432,6 +454,11 @@ public final class controllerMain implements Initializable {
         ComboBoxAlbunes.setValue("Ninguno");
     }
     
+    /**
+     * Metodo que pone la foto en el panel para visualizar la fotos
+     * @param name es el nombre del archivo o imagen
+     * @throws FileNotFoundException 
+     */
     private void setFotoPanel(String name) throws FileNotFoundException{
         PanelparaFotos.getChildren().clear();
         Database database = Database.getInstance();
@@ -475,10 +502,6 @@ public final class controllerMain implements Initializable {
         if(current >= 0 && current == tamanoList)current = 0;
         setFotoPanel(fotosDelAlbum.get(current).getId());
         setInfoFoto(fotosDelAlbum.get(current));
-    }
-
-    @FXML
-    private void EliminarAlbum(ActionEvent event) {
     }
 
     @FXML
@@ -553,5 +576,58 @@ public final class controllerMain implements Initializable {
     @FXML
     private void Cancelar(ActionEvent event) throws ParseException {
         clean();
+    }
+
+    @FXML
+    private void EditarAlbum(ActionEvent event) throws FileNotFoundException {
+        try {
+            Database database = Database.getInstance();
+            Album albu = database.getAlbum(albumEdit);
+            database.setAlbumEditar(albu);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/viewEditAlbum.fxml"));
+            Parent root = loader.load();
+            ControllerViewEditAlbum controllerEditAlbum = loader.getController(); 
+            Scene scene = new Scene(root);
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Edicion De Album");
+            stage.setResizable(false);
+            stage.setScene(scene);
+            stage.showAndWait();
+            String nameAlbum = controllerEditAlbum.getNameAlbum();
+            String descripcionAlbumE = controllerEditAlbum.getDescripcionAlbum();
+            boolean eliminarAlbum = controllerEditAlbum.getEliminarAlbum();
+            if(eliminarAlbum){
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setHeaderText(null);
+                alert.setTitle("Confirmacion");
+                alert.setContentText("¿Deseas realmente eliminar el album?, tambien se eliminaran todas las fotos");
+                alert.showAndWait();
+                if("Aceptar".equals(alert.getResult().getText())){
+                   if(albumEdit.isBlank()){
+                       return;
+                   }
+                   database.deleteAlbum(albumEdit);
+                   cargarDatosIniciales();
+                   return;
+                }
+            }
+            
+            if(!nameAlbum.isEmpty() || !descripcionAlbumE.isEmpty()){
+                try {
+                    Album newAlbum = new Album(nameAlbum,descripcionAlbumE);
+                    database.actualizarAlbum(albumEdit,newAlbum);
+                    cargarDatosIniciales();
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(controllerMain.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ParseException ex) {
+                    Logger.getLogger(controllerMain.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ControllerViewRegistroFoto.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
+            Logger.getLogger(controllerMain.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

@@ -40,7 +40,7 @@
             <Separator layoutY="60.0" prefHeight="3.0" prefWidth="340.0" />
             <Separator prefHeight="3.0" prefWidth="340.0" />
             <TreeView id="treeviewfile" fx:id="TVRoot" layoutX="12.0" layoutY="70.0" onMouseClicked="#verImagenOAlbum" prefHeight="349.0" prefWidth="316.0" />
-            <Button fx:id="btnELiminarAlbum" disable="true" layoutX="12.0" layoutY="425.0" mnemonicParsing="false" onAction="#EliminarAlbum" text="Editar Album" />
+            <Button fx:id="btnEditarAlbum" disable="true" layoutX="12.0" layoutY="425.0" mnemonicParsing="false" onAction="#EditarAlbum" text="Editar Album" />
          </children>
       </Pane>
       <Pane id="pnlProperties" layoutX="361.0" layoutY="386.0" prefHeight="281.0" prefWidth="603.0" style="-fx-background-color: #dedede;">
