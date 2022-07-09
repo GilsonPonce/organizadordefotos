@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="AnchorPane" prefHeight="163.0" prefWidth="316.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ControllerViewEditPersona">
+   <children>
+      <Button fx:id="btnCancelar" layoutX="21.0" layoutY="109.0" mnemonicParsing="false" onAction="#Cancelar" text="Cancelar" />
+      <Button fx:id="btnGuardarCambios" layoutX="106.0" layoutY="109.0" mnemonicParsing="false" onAction="#GuardarCambios" text="Guardar Cambios" />
+      <Button fx:id="btnELiminar" layoutX="235.0" layoutY="109.0" mnemonicParsing="false" onAction="#Eliminar" text="Eliminar" />
+      <Label layoutX="21.0" layoutY="25.0" text="Foto " />
+      <Label layoutX="21.0" layoutY="67.0" text="Nombre" />
+      <TextField fx:id="txtnombre" layoutX="82.0" layoutY="63.0" prefHeight="25.0" prefWidth="212.0" />
+      <ComboBox fx:id="cmbfoto" disable="true" layoutX="80.0" layoutY="21.0" prefHeight="25.0" prefWidth="212.0" />
+   </children>
+</AnchorPane>

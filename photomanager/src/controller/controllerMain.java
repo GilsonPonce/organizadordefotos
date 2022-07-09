@@ -121,6 +121,10 @@ public final class controllerMain implements Initializable {
     private Button btncancelar;
     @FXML
     private Button btnEditarAlbum;
+    @FXML
+    private Button btnEditarPersona;
+    @FXML
+    private Label lblDescripcionAlbum;
 
 
     /**
@@ -407,9 +411,12 @@ public final class controllerMain implements Initializable {
             LinkedList<Persona> personas = database.getPersonaByFoto(foto);
             ObservableList<String> items = FXCollections.observableArrayList();
             if(personas.size() > 0){
+                btnEditarPersona.setDisable(false);
                 for(int i=0;i<personas.size();i++){
                     items.add(personas.get(i).getNombre());
                 }
+            }else{
+                btnEditarPersona.setDisable(true);
             }
             ListFieldPersonasQAparecen.setItems(items);
         } catch (ParseException ex) {
@@ -562,7 +569,10 @@ public final class controllerMain implements Initializable {
             Persona per = new Persona(nombrePersona,fotoEdit.getId());
             if(nombrePersona != null){
                 try {
-                    database.inserPersona(per);
+                    boolean insertado = database.inserPersona(per);
+                    if(!insertado){
+                        mostrarAlert("Persona ya registrada");
+                    }
                     cargarPersonas(fotoEdit);
                 } catch (FileNotFoundException | ParseException ex) {
                     Logger.getLogger(controllerMain.class.getName()).log(Level.SEVERE, null, ex);
@@ -629,5 +639,58 @@ public final class controllerMain implements Initializable {
         } catch (ParseException ex) {
             Logger.getLogger(controllerMain.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    @FXML
+    private void editarPersona(ActionEvent event) throws IOException, FileNotFoundException, ParseException {
+        Database data = Database.getInstance();
+        String nombrePersona="";
+        ObservableList<String> selectedIndices = ListFieldPersonasQAparecen.getSelectionModel().getSelectedItems();
+        if(selectedIndices.size() > 0){
+            for(String o : selectedIndices){
+                nombrePersona = o;
+            }
+        }else{
+            mostrarAlert("Seleccione una persona");
+            return;
+        }
+        Persona per = new Persona(nombrePersona,fotoEdit.getId());
+      
+        data.setPersonaEditar(per);
+        
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/viewEditPersona.fxml"));
+            Parent root = loader.load();
+            ControllerViewEditPersona controllerEditPersona= loader.getController(); 
+            Scene scene = new Scene(root);
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Edicion De Persona");
+            stage.setResizable(false);
+            stage.setScene(scene);
+            stage.showAndWait();
+          
+            Persona perActualizada = controllerEditPersona.getPersona();
+            boolean eliminar = controllerEditPersona.isEliminar();
+            
+            if(eliminar){
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setHeaderText(null);
+                alert.setTitle("Confirmacion");
+                alert.setContentText("¿Deseas realmente eliminar a la persona?");
+                alert.showAndWait();
+                if("Aceptar".equals(alert.getResult().getText())){
+                   if(albumEdit.isBlank()){
+                       return;
+                   }
+                   data.deletePersona(per);
+                   cargarDatosIniciales();
+                   return;
+                }
+            }
+            
+            if(perActualizada != null){
+                data.actualizarPersona(per, perActualizada);
+                cargarDatosIniciales();
+            }
     }
 }

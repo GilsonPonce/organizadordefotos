@@ -45,20 +45,23 @@
       </Pane>
       <Pane id="pnlProperties" layoutX="361.0" layoutY="386.0" prefHeight="281.0" prefWidth="603.0" style="-fx-background-color: #dedede;">
          <children>
-            <Button id="btneliminarfoto" fx:id="btnEliminarFoto" disable="true" layoutX="22.0" layoutY="21.0" mnemonicParsing="false" onAction="#EliminarFoto" text="Eliminar Foto" />
+            <Button id="btneliminarfoto" fx:id="btnEliminarFoto" disable="true" layoutX="22.0" layoutY="10.0" mnemonicParsing="false" onAction="#EliminarFoto" text="Eliminar Foto" />
             <Button id="btnmodificarinformacion" fx:id="btnGuardarCambios" layoutX="115.0" layoutY="21.0" mnemonicParsing="false" onAction="#guardarCambiosFotos" text="Guardar cambios" visible="false" />
-            <Label layoutX="22.0" layoutY="74.0" text="Descripcion" />
-            <Label layoutX="22.0" layoutY="103.0" text="Lugar y fecha" />
+            <Label layoutX="25.0" layoutY="49.0" text="Descripcion" />
+            <Label layoutX="25.0" layoutY="78.0" text="Lugar y fecha" />
             <Label layoutX="24.0" layoutY="170.0" text="Personas que aparecen" />
-            <Label layoutX="23.0" layoutY="131.0" text="Album" />
-            <TextField id="txtdescripcionfoto" fx:id="TextFieldDescrip" disable="true" layoutX="129.0" layoutY="69.0" prefHeight="3.0" prefWidth="358.0" />
-            <TextField id="txtlugarfechafoto" fx:id="TextFieldLugar" disable="true" layoutX="130.0" layoutY="98.0" prefHeight="25.0" prefWidth="217.0" />
-            <DatePicker fx:id="DataPickerFecha" disable="true" editable="false" layoutX="353.0" layoutY="98.0" prefHeight="25.0" prefWidth="208.0" />
-            <ComboBox id="cmbalbum" fx:id="ComboBoxAlbunes" disable="true" layoutX="130.0" layoutY="127.0" prefHeight="17.0" prefWidth="257.0" />
+            <Label layoutX="26.0" layoutY="107.0" text="Album" />
+            <TextField id="txtdescripcionfoto" fx:id="TextFieldDescrip" disable="true" layoutX="132.0" layoutY="44.0" prefHeight="25.0" prefWidth="452.0" />
+            <TextField id="txtlugarfechafoto" fx:id="TextFieldLugar" disable="true" layoutX="133.0" layoutY="73.0" prefHeight="25.0" prefWidth="217.0" />
+            <DatePicker fx:id="DataPickerFecha" disable="true" editable="false" layoutX="357.0" layoutY="73.0" prefHeight="25.0" prefWidth="227.0" />
+            <ComboBox id="cmbalbum" fx:id="ComboBoxAlbunes" disable="true" layoutX="133.0" layoutY="102.0" prefHeight="17.0" prefWidth="257.0" />
             <ListView id="lvpersonas" fx:id="ListFieldPersonasQAparecen" layoutX="22.0" layoutY="196.0" prefHeight="73.0" prefWidth="544.0" />
-            <Button fx:id="btnEditarFoto" disable="true" layoutX="131.0" layoutY="21.0" mnemonicParsing="false" onAction="#editarFoto" text="Editar Foto" />
+            <Button fx:id="btnEditarFoto" disable="true" layoutX="131.0" layoutY="10.0" mnemonicParsing="false" onAction="#editarFoto" text="Editar Foto" />
             <Button fx:id="btnAnadirPersonas" disable="true" layoutX="153.0" layoutY="166.0" mnemonicParsing="false" onAction="#anadirPersonas" text="Añadir Personas" />
             <Button fx:id="btncancelar" layoutX="228.0" layoutY="21.0" mnemonicParsing="false" onAction="#Cancelar" text="Cancelar" visible="false" />
+            <Button fx:id="btnEditarPersona" disable="true" layoutX="264.0" layoutY="166.0" mnemonicParsing="false" onAction="#editarPersona" text="Editar Persona" />
+            <Label layoutX="25.0" layoutY="134.0" text="Descripcion de album" />
+            <Label fx:id="lblDescripcionAlbum" layoutX="154.0" layoutY="135.0" textFill="#656565" />
          </children>
       </Pane>
       <Button id="btnseguir" fx:id="nextFoto" disable="true" layoutX="394.0" layoutY="357.0" mnemonicParsing="false" onAction="#nextFoto" text="&gt;" />
