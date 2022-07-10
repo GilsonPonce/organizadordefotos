@@ -125,6 +125,8 @@ public final class controllerMain implements Initializable {
     private Button btnEditarPersona;
     @FXML
     private Label lblDescripcionAlbum;
+    @FXML
+    private Button btnRecargaBiblioteca;
 
 
     /**
@@ -148,9 +150,19 @@ public final class controllerMain implements Initializable {
             String Lugar = TFLugar.getText();
             String Persona = TFPersona.getText();
             
+            String[] parts = Persona.split(";");
+            int numeroPersonas = parts.length;
+            
             if(CBPorPersona.isSelected() && CBPorLugar.isSelected()){
                 if((!Persona.isEmpty()) && (!Lugar.isEmpty())){
                     Galeria gaPerLugar = database.getGaleriaByPersonaOrLugar(Lugar, Persona);
+                    LinkedList<String> personasBuscadas = new LinkedList();
+                    if(numeroPersonas >= 2){
+                        for(String name: parts){
+                            personasBuscadas.add(name.trim());
+                        }
+                        gaPerLugar = database.getGaleriaByPersonasOrLugar(Lugar,personasBuscadas);
+                    }
                     if(gaPerLugar.getFotos().isEmpty()){
                        mostrarAlert("No hay resultados para mostrar");
                         return;
@@ -168,8 +180,12 @@ public final class controllerMain implements Initializable {
                    if(gaLugar.getFotos().isEmpty()){
                       mostrarAlert("No hay resultados para mostrar");
                       return;
-                  }
-                   cargarGaleria(gaLugar);
+                    }
+                    if(gaLugar.getFotos().isEmpty()){
+                       mostrarAlert("No hay resultados para mostrar");
+                       return;
+                    }
+                    cargarGaleria(gaLugar);
                }else{
                    mostrarAlert("El campo de lugar esta vacia");
                    return;
@@ -178,7 +194,14 @@ public final class controllerMain implements Initializable {
 
             if(CBPorPersona.isSelected()){
               if(!Persona.isEmpty()){
+                  LinkedList<String> personasBuscadas = new LinkedList();
                   Galeria gaPersona = database.getGaleriaByPersona(Persona);
+                  if(numeroPersonas >= 2){
+                    for(String name: parts){
+                      personasBuscadas.add(name.trim());
+                    }
+                    gaPersona = database.getGaleriaByPersonas(personasBuscadas);
+                  }
                   if(gaPersona.getFotos().isEmpty()){
                       mostrarAlert("No hay resultados para mostrar");
                       return;
@@ -199,6 +222,8 @@ public final class controllerMain implements Initializable {
             a.show(); 
         }
     }
+    
+    
     
     private void mostrarAlert(String mensaje) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -368,7 +393,6 @@ public final class controllerMain implements Initializable {
               previousFoto.setDisable(true);
               nextFoto.setDisable(true);
               Foto foto = database.getFotoById(name);
-              albumEdit = foto.getAlbum();
               setInfoFoto(foto);
               setFotoPanel(name);
            }
@@ -692,5 +716,10 @@ public final class controllerMain implements Initializable {
                 data.actualizarPersona(per, perActualizada);
                 cargarDatosIniciales();
             }
+    }
+
+    @FXML
+    private void recargaBiblioteca(ActionEvent event) throws IOException, ParseException {
+        cargarDatosIniciales();
     }
 }

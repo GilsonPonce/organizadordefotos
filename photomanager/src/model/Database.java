@@ -237,6 +237,48 @@ public final class Database{
       return getGaleriaIdFoto(idsImagenes);
     }
     
+    public Galeria getGaleriaByPersonas(LinkedList<String> personasBuscadas) throws IOException{
+      ArrayList<String> idsImagenes = new ArrayList();
+      
+      try {
+          Galeria galeria = getGaleria();
+          ArrayList<Foto> fotos = galeria.getFotos();
+          ArrayList<Persona> personas = galeria.getPersonas();
+          idsImagenes = getIdsFotosByPersonas(fotos,personas, personasBuscadas);
+            
+      } catch (ParseException ex) {
+          Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+      }
+      return getGaleriaIdFoto(idsImagenes);
+    }
+    
+    private ArrayList<String> getIdsFotosByPersonas(ArrayList<Foto> fotos,ArrayList<Persona> personas,LinkedList<String> personasBuscadas){
+        ArrayList<String> idsImagenes = new ArrayList();
+        for(Foto ft: fotos){
+              ArrayList<String> personasFoto = new ArrayList();
+              String idFoto = ft.getId();
+              for(Persona per: personas){
+                  String idFotoPer = per.getIdFoto();
+                 if(idFoto.equals(idFotoPer)){
+                     personasFoto.add(per.getNombre());
+                 }
+              }
+              if(personasFoto.size()>0){
+                boolean contieneTodos = true;
+                for(String nomPer: personasBuscadas){
+                    if(!personasFoto.contains(nomPer)){
+                        contieneTodos = false;
+                        break;
+                    }
+                }
+                if(contieneTodos){
+                    idsImagenes.add(idFoto);
+                }
+              }
+          }
+        return  idsImagenes;
+    }
+    
     public Galeria getGaleriaByPersonaOrLugar(String lugar, String persona) throws IOException{
         ArrayList<String> idsImagenes = new ArrayList();
         ArrayList<String> idsImagenesLugar = new ArrayList();
@@ -262,6 +304,28 @@ public final class Database{
           Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
       }
       return getGaleriaIdFoto(idsImagenesLugar);
+    }
+    
+    public Galeria getGaleriaByPersonasOrLugar(String lugar, LinkedList<String> personasBuscadas) throws IOException{
+        ArrayList<String> idsImagenes = new ArrayList();
+        ArrayList<Foto> fotosFilterLugar = new ArrayList();
+        try {
+          Galeria galeria = getGaleria();
+          ArrayList<Persona> personas = galeria.getPersonas();
+          ArrayList<Foto> fotos = galeria.getFotos();
+          for(Foto ft: fotos){
+              String lugarFoto = ft.getLugar();
+              if(lugarFoto.equals(lugar)){
+                  fotosFilterLugar.add(ft);
+              }
+          }
+          
+          idsImagenes = getIdsFotosByPersonas(fotosFilterLugar,personas, personasBuscadas);
+          
+      } catch (ParseException ex) {
+          Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+      }
+      return getGaleriaIdFoto(idsImagenes);
     }
     
     public Galeria getGaleriaIdFoto(ArrayList<String> idsFotos) throws IOException, FileNotFoundException{
