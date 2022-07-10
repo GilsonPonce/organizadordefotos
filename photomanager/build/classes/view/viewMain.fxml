@@ -47,7 +47,7 @@
       <Pane id="pnlProperties" layoutX="361.0" layoutY="386.0" prefHeight="281.0" prefWidth="603.0" style="-fx-background-color: #dedede;">
          <children>
             <Button id="btneliminarfoto" fx:id="btnEliminarFoto" disable="true" layoutX="22.0" layoutY="10.0" mnemonicParsing="false" onAction="#EliminarFoto" text="Eliminar Foto" />
-            <Button id="btnmodificarinformacion" fx:id="btnGuardarCambios" layoutX="115.0" layoutY="21.0" mnemonicParsing="false" onAction="#guardarCambiosFotos" text="Guardar cambios" visible="false" />
+            <Button id="btnmodificarinformacion" fx:id="btnGuardarCambios" layoutX="115.0" layoutY="10.0" mnemonicParsing="false" onAction="#guardarCambiosFotos" text="Guardar cambios" visible="false" />
             <Label layoutX="25.0" layoutY="49.0" text="Descripcion" />
             <Label layoutX="25.0" layoutY="78.0" text="Lugar y fecha" />
             <Label layoutX="24.0" layoutY="170.0" text="Personas que aparecen" />
@@ -57,9 +57,9 @@
             <DatePicker fx:id="DataPickerFecha" disable="true" editable="false" layoutX="357.0" layoutY="73.0" prefHeight="25.0" prefWidth="227.0" />
             <ComboBox id="cmbalbum" fx:id="ComboBoxAlbunes" disable="true" layoutX="133.0" layoutY="102.0" prefHeight="17.0" prefWidth="257.0" />
             <ListView id="lvpersonas" fx:id="ListFieldPersonasQAparecen" layoutX="22.0" layoutY="196.0" prefHeight="73.0" prefWidth="544.0" />
-            <Button fx:id="btnEditarFoto" disable="true" layoutX="131.0" layoutY="10.0" mnemonicParsing="false" onAction="#editarFoto" text="Editar Foto" />
+            <Button fx:id="btnEditarFoto" disable="true" layoutX="131.0" layoutY="9.0" mnemonicParsing="false" onAction="#editarFoto" text="Editar Foto" />
             <Button fx:id="btnAnadirPersonas" disable="true" layoutX="153.0" layoutY="166.0" mnemonicParsing="false" onAction="#anadirPersonas" text="Añadir Personas" />
-            <Button fx:id="btncancelar" layoutX="228.0" layoutY="21.0" mnemonicParsing="false" onAction="#Cancelar" text="Cancelar" visible="false" />
+            <Button fx:id="btncancelar" layoutX="230.0" layoutY="10.0" mnemonicParsing="false" onAction="#Cancelar" text="Cancelar" visible="false" />
             <Button fx:id="btnEditarPersona" disable="true" layoutX="264.0" layoutY="166.0" mnemonicParsing="false" onAction="#editarPersona" text="Editar Persona" />
             <Label layoutX="25.0" layoutY="134.0" text="Descripcion de album" />
             <Label fx:id="lblDescripcionAlbum" layoutX="148.0" layoutY="134.0" textFill="#656565" />

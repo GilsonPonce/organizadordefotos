@@ -413,8 +413,13 @@ public final class controllerMain implements Initializable {
               previousFoto.setDisable(true);
               nextFoto.setDisable(true);
               Foto foto = database.getFotoById(name);
-              String descripcionAl = database.getAlbum(foto.getAlbum()).getDescripcion();
-              lblDescripcionAlbum.setText(descripcionAl);
+              Album album = database.getAlbum(foto.getAlbum());
+              if(album != null){
+                  String descripcionAl = album.getDescripcion();
+                  lblDescripcionAlbum.setText(descripcionAl);
+              }else{
+                  lblDescripcionAlbum.setText("");
+              }
               setInfoFoto(foto);
               setFotoPanel(name);
            }
