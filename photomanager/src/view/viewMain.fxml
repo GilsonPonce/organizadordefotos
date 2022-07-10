@@ -62,7 +62,7 @@
             <Button fx:id="btncancelar" layoutX="228.0" layoutY="21.0" mnemonicParsing="false" onAction="#Cancelar" text="Cancelar" visible="false" />
             <Button fx:id="btnEditarPersona" disable="true" layoutX="264.0" layoutY="166.0" mnemonicParsing="false" onAction="#editarPersona" text="Editar Persona" />
             <Label layoutX="25.0" layoutY="134.0" text="Descripcion de album" />
-            <Label fx:id="lblDescripcionAlbum" layoutX="154.0" layoutY="135.0" textFill="#656565" />
+            <Label fx:id="lblDescripcionAlbum" layoutX="148.0" layoutY="134.0" textFill="#656565" />
          </children>
       </Pane>
       <Button id="btnseguir" fx:id="nextFoto" disable="true" layoutX="394.0" layoutY="357.0" mnemonicParsing="false" onAction="#nextFoto" text="&gt;" />

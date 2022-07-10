@@ -34,6 +34,8 @@ public final class Database{
   private Usuario usuario;
   private Album albumEditar;
   private Persona personaEditar;
+  private boolean filter;
+  private Galeria galeriaFilter;
   private static final Database INSTANCE = new Database();
   
   public static Database getInstance(){
@@ -62,6 +64,24 @@ public final class Database{
     public void setPersonaEditar(Persona personaEditar) {
         this.personaEditar = personaEditar;
     }
+
+    public boolean isFilter() {
+        return filter;
+    }
+
+    public void setFilter(boolean filter) {
+        this.filter = filter;
+    }
+
+    public Galeria getGaleriaFilter() {
+        return galeriaFilter;
+    }
+
+    public void setGaleriaFilter(Galeria galeriaFilter) {
+        this.galeriaFilter = galeriaFilter;
+    }
+    
+  
   
   /**
    * Metodo que crea el archivo de base de datos en blanco
@@ -514,15 +534,23 @@ public final class Database{
        return eliminar;
    }
    
-   private boolean deleteArchivo(String url){
+   private boolean deleteArchivo(String url) throws IOException{
        boolean eliminado = false;
-       Path path = Paths.get(url);
-        try {
-            eliminado = Files.deleteIfExists(path);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return eliminado;
+       String directorio = "tmp\\"+this.usuario.getNombre();
+       File f = new File(directorio);
+       if(f.exists()){
+           File[] imagenes = f.listFiles();
+           for(int i=0;i<imagenes.length;i++){
+               String nameFile = imagenes[i].getName();
+               String[] parts = nameFile.split("\\.");
+               if(parts[0].equals(url)){
+                  String urlArchivo = directorio + "\\"+nameFile;
+                  Path path = Paths.get(urlArchivo);
+                  eliminado = Files.deleteIfExists(path);
+               }
+           }
+       }
+       return eliminado;
    }
 
    public boolean ingresarFoto(Foto foto) throws IOException, FileNotFoundException, ParseException{
@@ -532,6 +560,29 @@ public final class Database{
             recrearDatabase(this.usuario.getNombre(),galeria);
        }
        return ingresado;
+   }
+   
+   public boolean deleteFoto(String id) throws IOException, FileNotFoundException, ParseException{
+       Galeria galeria = getGaleria();
+       ArrayList<Foto> allfotos = galeria.getFotos();
+       ArrayList<Persona> allpersonas = galeria.getPersonas();
+       boolean eliminado = false;
+       for(int i=0;i<allfotos.size();i++){
+           String idfoto = allfotos.get(i).getId();
+           if(id.equals(idfoto)){
+               eliminado = galeria.getFotos().remove(i);
+           }
+       }
+       for(int j=0;j<allpersonas.size();j++){
+           String idp = allpersonas.get(j).getIdFoto();
+           if(idp.equals(id)){
+              galeria.getPersonas().remove(j);
+           }
+       }
+       if(eliminado){
+           recrearDatabase(this.usuario.getNombre(),galeria);
+       }
+       return eliminado;
    }
    
    public int existePersona(Persona persona)throws IOException, FileNotFoundException, ParseException{
@@ -608,28 +659,7 @@ public final class Database{
        return actualizado;
    }
    
-   public boolean deleteFoto(String id) throws IOException, FileNotFoundException, ParseException{
-       Galeria galeria = getGaleria();
-       ArrayList<Foto> allfotos = galeria.getFotos();
-       ArrayList<Persona> allpersonas = galeria.getPersonas();
-       boolean eliminado = false;
-       for(int i=0;i<allfotos.size();i++){
-           String idfoto = allfotos.get(i).getId();
-           if(id.equals(idfoto)){
-               eliminado = galeria.getFotos().remove(i);
-           }
-       }
-       for(int j=0;j<allpersonas.size();j++){
-           String idp = allpersonas.get(j).getIdFoto();
-           if(idp.equals(id)){
-              galeria.getPersonas().remove(j);
-           }
-       }
-       if(eliminado){
-           recrearDatabase(this.usuario.getNombre(),galeria);
-       }
-       return eliminado;
-   }
+   
    
    public boolean updateFoto(Foto foto) throws IOException, FileNotFoundException, ParseException{
        Galeria galeria = getGaleria();

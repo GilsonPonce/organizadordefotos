@@ -167,9 +167,12 @@ public final class controllerMain implements Initializable {
                        mostrarAlert("No hay resultados para mostrar");
                         return;
                     }
+                    database.setFilter(true);
+                    database.setGaleriaFilter(gaPerLugar);
                     cargarGaleria(gaPerLugar);
                 }else{
                     mostrarAlert("El campo de personas y lugar esta vacio");
+                    database.setFilter(false);
                     return;
                 }
             }
@@ -185,8 +188,11 @@ public final class controllerMain implements Initializable {
                        mostrarAlert("No hay resultados para mostrar");
                        return;
                     }
+                    database.setFilter(true);
+                    database.setGaleriaFilter(gaLugar);
                     cargarGaleria(gaLugar);
                }else{
+                    database.setFilter(false);
                    mostrarAlert("El campo de lugar esta vacia");
                    return;
                }
@@ -206,14 +212,18 @@ public final class controllerMain implements Initializable {
                       mostrarAlert("No hay resultados para mostrar");
                       return;
                   }
+                  database.setGaleriaFilter(gaPersona);
+                  database.setFilter(true);
                   cargarGaleria(gaPersona);
               }else{
+                  database.setFilter(false);
                   mostrarAlert("El campo de persona esta vacia");
                   return;
               }
             }
            
             if(CBPorLugar.isSelected() == false && CBPorPersona.isSelected() == false){
+                 database.setFilter(false);
                 mostrarAlert("Seleccione una opcion");
             }
         }  
@@ -370,12 +380,22 @@ public final class controllerMain implements Initializable {
            String name = (String) ((TreeItem) TVRoot.getSelectionModel().getSelectedItem()).getValue();
            clean();
            if(database.existeAlbum(name)){
+               String descripcionAl = database.getAlbum(name).getDescripcion();
+               lblDescripcionAlbum.setText(descripcionAl);
                CircularDoubleLinkedList<Foto> imagenes = new CircularDoubleLinkedList();
-               ArrayList<Foto> fotos = database.getGaleria().getFotos();
-               ArrayList<Foto> fotosDelAlbumt = database.getFotoByNameAlbum(fotos,name);
-                btnEditarAlbum.setDisable(false);
+               ArrayList<Foto> fotos = new ArrayList();
+               ArrayList<Foto> fotosDelAlbumt = new ArrayList();
+               btnEditarAlbum.setDisable(false);
                 albumEdit = name;
-               if(fotosDelAlbumt.size() > 0){
+                boolean filter = database.isFilter();
+                if(!filter){
+                  fotos = database.getGaleria().getFotos();
+                }else{
+                  if(database.getGaleriaFilter() != null) fotos = database.getGaleriaFilter().getFotos();
+                }
+                fotosDelAlbumt = database.getFotoByNameAlbum(fotos,name);
+                btnEditarPersona.setDisable(true);
+                if(fotosDelAlbumt.size() > 0){
                 for(int i=0;i<fotosDelAlbumt.size();i++){
                   Foto f = fotosDelAlbumt.get(i);
                   imagenes.add(f);
@@ -393,6 +413,8 @@ public final class controllerMain implements Initializable {
               previousFoto.setDisable(true);
               nextFoto.setDisable(true);
               Foto foto = database.getFotoById(name);
+              String descripcionAl = database.getAlbum(foto.getAlbum()).getDescripcion();
+              lblDescripcionAlbum.setText(descripcionAl);
               setInfoFoto(foto);
               setFotoPanel(name);
            }
@@ -450,6 +472,7 @@ public final class controllerMain implements Initializable {
     
     private void clean() throws ParseException{
         try {
+            lblDescripcionAlbum.setText("");
             ListFieldPersonasQAparecen.getItems().clear();
             TextFieldDescrip.setText("");
             TextFieldDescrip.setDisable(true);
